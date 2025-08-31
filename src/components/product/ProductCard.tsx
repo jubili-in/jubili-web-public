@@ -236,8 +236,8 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
 
         {/* Buy Row */}
         <div className="flex items-center gap-3 mt-2 w-full md:w-2/3 lg:w-1/2 px-4">
-          <Link href={`/product/${product.productId}`}>
-            <button className="bg-gray-900 text-white rounded-full px-10 py-2 text-lg font-semibold hover:bg-gray-800 transition-colors">
+          <Link href={`/payment/${product.productId}`}>
+            <button className="bg-gray-900 text-white rounded-full px-10 py-2 text-lg font-semibold hover:bg-gray-800 hover:cursor-pointer transition-colors">
               Make it yours
             </button>
           </Link>

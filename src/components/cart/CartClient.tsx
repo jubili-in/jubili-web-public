@@ -94,7 +94,7 @@ export const CartClient = () => {
   }, [router]);
 
   const handleCheckout = useCallback(() => {
-    router.push('/payment');
+    router.push('/payment/cart');
   }, [router]);
 
   const handleRetry = useCallback(() => {

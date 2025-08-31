@@ -2,7 +2,7 @@
 "use client";
 
 import { Suspense, useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useProduct } from '@/hooks/useProduct';
 import { useCart } from '@/hooks/useCart';
@@ -29,6 +29,7 @@ function ErrorMessage({ error, onRetry }: { error: string; onRetry: () => void }
 
 function ProductContent() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const id = params?.id ?? null;
   const { token } = useAuth();
   const { isLoading, product, error, retry, handleLikeToggle } = useProduct(id, token || undefined);
@@ -183,7 +184,7 @@ function ProductContent() {
             />
             <CustomButton 
               label='Buy Now'
-              onClick={() => {}}
+              onClick={() => router.push(`/payment/${id}`)}
               loading={false}
               backgroundColor='#fcba03'
               textColor='black'
