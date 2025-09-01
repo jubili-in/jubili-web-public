@@ -1,3 +1,4 @@
+//app/payment/[type]/page.tsx
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
@@ -12,6 +13,9 @@ import { Product } from "@/lib/types/product";
 import { CartItem } from "@/lib/types/cart";
 import { useAuth } from "@/hooks/useAuth";
 import { useToastActions } from "@/hooks/useToastActions";
+import Script from "next/script";
+import axios from "axios";
+import { RazorpayOptions, RazorpayOrderResponse, RazorpayPaymentResponse } from "@/lib/types/razorpay";
 
 type DemoAddress = {
   id: string;
@@ -32,13 +36,14 @@ export default function PaymentPage() {
   const params = useParams<{ type: string }>();
   const router = useRouter();
   const { type } = params;
-  const { userId, token } = useAuth();
+  const { userId, token, user } = useAuth();
   const { cart, loading: cartLoading, fetchCart } = useCart();
   const { showError } = useToastActions();
   
   const [singleProduct, setSingleProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
   // Demo addresses
   const [addresses] = useState<DemoAddress[]>([
@@ -168,6 +173,81 @@ export default function PaymentPage() {
 
   const selectedAddress = addresses.find(a => a.id === selectedAddressId) ?? addresses[0];
 
+
+  const handlePayment = async (): Promise<void> => {
+    if (!razorpayLoaded) {
+      alert("Razorpay not loaded yet");
+      return;
+    }
+
+    try {
+      const { data } = await axios.post<RazorpayOrderResponse>("http://localhost:8000/api/payment/razorpay/order", {
+        amount: totals.grandTotal,
+        receipt: `rcpt_${Date.now()}`,
+        orderId: `order_${Date.now()}`,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (!data.success) {
+        alert("Order creation failed");
+        return;
+      }
+      
+      const options: RazorpayOptions = {
+        key: data.key,
+        amount: data.order.amount,
+        currency: data.order.currency,
+        name: "Jubili",
+        description: "Test Payment",
+        order_id: data.order.id,
+        handler: async (response) => {
+          try {
+            const verify = await axios.post(
+              "http://localhost:8000/api/payment/razorpay/verify",
+              {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                orderId: data.order.id, // <-- your product order ID
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+        
+            if (verify.data.success) {
+              alert("Payment Successful!");
+            } else {
+              alert("Payment verification failed");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Verification error");
+          }
+        },
+        
+        prefill: {
+          name: user?.name || "unnamed",
+          email: user?.email || "unknown@example.com",
+          contact: user?.phone || "unknown",
+        },
+        theme: { color: "#3399cc" },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error(error);
+      alert("Payment error");
+    }
+  };
+  
   // Show loading state
   if (loading || (isCartPayment && cartLoading)) {
     return (
@@ -215,6 +295,7 @@ export default function PaymentPage() {
   }
 
   return (
+    <>
     <div className="max-w-6xl mx-auto p-4">
       <div className="flex items-center gap-4 mb-6">
         <button
@@ -442,11 +523,16 @@ export default function PaymentPage() {
             <CustomButton
               label={`Pay ${currency(totals.grandTotal)}`}
               loading={false}
-              onClick={() => alert(`Demo: Proceeding to payment gateway for ${isCartPayment ? 'cart' : 'single product'} checkout`)}
+              onClick={() => handlePayment()}
             />
           </div>
         </div>
       </div>
     </div>
+    <Script
+    src="https://checkout.razorpay.com/v1/checkout.js"
+    onLoad={() => setRazorpayLoaded(true)}
+    />
+  </>
   );
 }
