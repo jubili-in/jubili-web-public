@@ -20,4 +20,13 @@ export const API_ENDPOINTS = {
     // DY_CART_RTE: '/api/user-actions',
     // DELETE_CART: '/api/user-actions'
   },
+  ADDRESS: {
+    BASE: '/api/address',
+    MY_ADDRESSES: '/api/address/my-addresses',
+    CREATE: '/api/address/create',
+    BY_ID: (addressId: string) => `/api/address/${addressId}`,
+    UPDATE: (addressId: string) => `/api/address/update/${addressId}`,
+    DELETE: (addressId: string) => `/api/address/delete/${addressId}`,
+    SET_DEFAULT: (addressId: string) => `/api/address/set-default/${addressId}`,
+  },
 } as const;

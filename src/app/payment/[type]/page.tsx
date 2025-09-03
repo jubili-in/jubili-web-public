@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToastActions } from "@/hooks/useToastActions";
 import Script from "next/script";
 import axios from "axios";
-import { RazorpayOptions, RazorpayOrderResponse, RazorpayPaymentResponse } from "@/lib/types/razorpay";
+import { RazorpayOptions, RazorpayOrderResponse } from "@/lib/types/razorpay";
 
 type DemoAddress = {
   id: string;
@@ -44,6 +44,8 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   // Demo addresses
   const [addresses] = useState<DemoAddress[]>([
@@ -162,14 +164,14 @@ export default function PaymentPage() {
     }
   };
 
-  const onRemove = (id: string) => {
-    if (isCartPayment) {
-      // For cart payments, removal is handled by cart context
-      return;
-    }
-    // For single product payments, redirect back
-    router.push('/');
-  };
+  // const onRemove = (id: string) => {
+  //   if (isCartPayment) {
+  //     // For cart payments, removal is handled by cart context
+  //     return;
+  //   }
+  //   // For single product payments, redirect back
+  //   router.push('/');
+  // };
 
   const selectedAddress = addresses.find(a => a.id === selectedAddressId) ?? addresses[0];
 
@@ -181,7 +183,7 @@ export default function PaymentPage() {
     }
 
     try {
-      const { data } = await axios.post<RazorpayOrderResponse>("http://localhost:8000/api/payment/razorpay/order", {
+      const { data } = await axios.post<RazorpayOrderResponse>(`${baseUrl}/api/payment/razorpay/order`, {
         amount: totals.grandTotal,
         receipt: `rcpt_${Date.now()}`,
         orderId: `order_${Date.now()}`,
@@ -202,17 +204,17 @@ export default function PaymentPage() {
         amount: data.order.amount,
         currency: data.order.currency,
         name: "Jubili",
-        description: "Test Payment",
+        description: "Safe & Secure Payment using Razorpay",
         order_id: data.order.id,
         handler: async (response) => {
           try {
             const verify = await axios.post(
-              "http://localhost:8000/api/payment/razorpay/verify",
+              `${baseUrl}/api/payment/razorpay/verify`,
               {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                orderId: data.order.id, // <-- your product order ID
+                razorpay_signature: response.razorpay_signature,  
+                orderId: data.order.id,
               },
               {
                 headers: {
@@ -404,7 +406,7 @@ export default function PaymentPage() {
                     {isSingleProductPayment ? (
                       <button 
                         className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-100 transition text-gray-500 hover:text-red-600"
-                        onClick={() => onRemove(item.id)}
+                        // onClick={() => onRemove(item.id)}
                         aria-label="Remove item from checkout"
                       >
                         <FaTrash size={14} />
