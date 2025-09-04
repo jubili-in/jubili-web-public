@@ -22,14 +22,14 @@ export const CartItem = ({ item }: CartItemProps) => {
         <div className="flex justify-between">
           <h3 className="text-lg font-medium text-gray-900">{item.productName}</h3>
           <p className="text-lg font-medium text-gray-900">
-            ₹{item.totalDiscountedPrice.toFixed(2)}
+            ₹{item.totalCurrentPrice.toFixed(2)}
           </p>
         </div>
         
         <div className="mt-1 flex items-center gap-4">
-          <p className="text-sm text-gray-500">
+          {/* <p className="text-sm text-gray-500">
             {item.color} | {item.size}
-          </p>
+          </p> */}
           <p className="text-sm text-gray-500">{item.brand}</p>
         </div>
 
@@ -58,7 +58,7 @@ export const CartItem = ({ item }: CartItemProps) => {
           />
         </div>
 
-        {item.discountOnProduct > 0 && (
+        {/* {item.discountOnProduct > 0 && (
           <div className="mt-1">
             <span className="text-sm text-gray-500 line-through mr-2">
               ₹{item.price.toFixed(2)}
@@ -67,7 +67,7 @@ export const CartItem = ({ item }: CartItemProps) => {
               {item.discountOnProduct}% off
             </span>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

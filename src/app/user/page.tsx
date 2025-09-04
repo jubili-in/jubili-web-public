@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useAddresses } from "@/hooks/useAddresses";
+// import { useAddresses } from "@/hooks/useAddresses";
 import CustomButton from "@/components/ui/CustomButton";
 import AuthPopup from "@/components/shared/AuthPopup";
 import Navbar from "@/components/layout/Navbar";
 import PageHeading from "@/components/shared/PageHeading";
-import AddressModal from "@/components/payment/AddressModal";
-import { Address } from "@/lib/types/address";
+// import AddressModal from "@/components/payment/AddressModal";
+// import { Address } from "@/lib/types/address";
 
 // Placeholder orders data
 const sampleOrders = [

@@ -17,17 +17,17 @@ export interface CartItem {
   productId: string;
   productName: string;
   imageUrl: string;
-  color: string;
-  size: string;
-  gender: string;
-  material: string;
+  // color: string;
+  // size: string;
+  // gender: string;
+  // material: string;
   brand: string;
   sellerId: string;
   price: number;
-  discountOnProduct: number;
-  discountAmount: number;
+  // discountOnProduct: number;
+  // discountAmount: number;
   quantity: number;
-  totalDiscountedPrice: number;
+  totalCurrentPrice: number;
 }
 
 export interface CartResponse {

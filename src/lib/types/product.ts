@@ -1,13 +1,13 @@
 export interface Product {
+  currentPrice: number;
   productId: string;
   productName: string;
   productDescription: string;
   price: number;
-  discount: number;
   brand: string;
-  color: string;
-  size: string;
-  material: string;
+  // color: string;
+  // size: string;
+  // material: string;
   gender: string;
   stock: number;
   likeCount: number;
@@ -42,11 +42,9 @@ export const transformLikedProductToProduct = (likedProduct: LikedProduct): Prod
   ...likedProduct,
   imageUrls: [likedProduct.imageUrl], // Convert single URL to array
   price: 0, // Default values for missing fields
-  discount: 0,
+  currentPrice: 0,
+  // discount: 0,
   brand: '',
-  color: '',
-  size: '',
-  material: '',
   gender: '',
   stock: 0,
   likeCount: 0,

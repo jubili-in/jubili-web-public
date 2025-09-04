@@ -110,11 +110,11 @@ export const CartClient = () => {
     productId: string, 
     currentQuantity: number, 
     delta: number,
-    size: string,
-    color: string
+    // size: string,
+    // color: string
   ) => {
     const newQuantity = currentQuantity + delta;
-    const itemKey = `${productId}-${size}-${color}`;
+    const itemKey = `${productId}`;
     
     if (newQuantity < 1) return;
 
@@ -131,10 +131,9 @@ export const CartClient = () => {
 
   const handleRemoveItem = useCallback(async (
     productId: string,
-    size: string,
-    color: string
+    
   ) => {
-    const itemKey = `${productId}-${size}-${color}`;
+    const itemKey = `${productId}`;
     
     setLoadingItems(prev => ({ ...prev, [itemKey]: true }));
 
@@ -176,7 +175,8 @@ export const CartClient = () => {
 
             {/* Cart Items */}
             {cart.items.map((item) => {
-              const itemKey = `${item.productId}-${item.size}-${item.color}`;
+              const itemKey = `${item.productId}`;
+              // -${item.size}-${item.color}
               const isItemLoading = loadingItems[itemKey] || false;
               
               return (
@@ -200,14 +200,14 @@ export const CartClient = () => {
                         {item.productName}
                       </h3>
                       <div className="text-xs text-gray-500 mt-1">
-                        <span>Brand: {item.brand}</span>
+                        {/* <span>Brand: {item.brand}</span>
                         <span className="mx-1">•</span>
                         <span>Color: {item.color}</span>
                         <span className="mx-1">•</span>
-                        <span>Size: {item.size}</span>
+                        <span>Size: {item.size}</span> */}
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
-                        Material: {item.material}
+                        {/* Material: {item.material} */}
                       </div>
                     </div>
                   </Link>
@@ -217,7 +217,8 @@ export const CartClient = () => {
                     <button 
                       className="w-8 h-8 rounded-full border border-gray-300 text-sm font-bold flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed" 
                       disabled={isItemLoading || item.quantity <= 1}
-                      onClick={() => handleQuantityChange(item.productId, item.quantity, -1, item.size, item.color)}
+                      onClick={() => handleQuantityChange(item.productId, item.quantity, -1)}
+                      // item.size, item.color
                       aria-label="Decrease quantity"
                     >
                       <FaMinus size={10} />
@@ -228,7 +229,7 @@ export const CartClient = () => {
                     <button 
                       className="w-8 h-8 rounded-full border border-gray-300 text-sm font-bold flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed" 
                       disabled={isItemLoading}
-                      onClick={() => handleQuantityChange(item.productId, item.quantity, 1, item.size, item.color)}
+                      onClick={() => handleQuantityChange(item.productId, item.quantity, 1,)}
                       aria-label="Increase quantity"
                     >
                       <FaPlus size={10} />
@@ -239,9 +240,9 @@ export const CartClient = () => {
                   <div className="col-span-2 w-full md:text-center mb-4 md:mb-0">
                     <div className="flex flex-col items-start md:items-center">
                       <span className="font-semibold text-lg text-gray-900">
-                        ₹{item.totalDiscountedPrice.toLocaleString()}
+                        ₹{item.totalCurrentPrice.toLocaleString()}
                       </span>
-                      {item.discountOnProduct > 0 && (
+                      {/* {item.discountOnProduct > 0 && (
                         <div className="text-xs text-gray-500 mt-1">
                           <span className="line-through mr-1">
                             ₹{(item.price * item.quantity).toLocaleString()}
@@ -250,7 +251,7 @@ export const CartClient = () => {
                             ({item.discountOnProduct}% off)
                           </span>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </div>
 
@@ -259,7 +260,7 @@ export const CartClient = () => {
                     <button 
                       className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-100 transition text-gray-500 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed" 
                       disabled={isItemLoading}
-                      onClick={() => handleRemoveItem(item.productId, item.size, item.color)}
+                      onClick={() => handleRemoveItem(item.productId, )}
                       aria-label="Remove item from cart"
                     >
                       <FaTrash size={14} />
