@@ -190,12 +190,13 @@ export default function PaymentPage() {
         amount: totals.grandTotal,
         receipt: `rcpt_${Date.now()}`,
         orderId: `order_${Date.now()}`,
+        userId: user?.userId,
+        address: addresses[0],
+        totalAmount: 100,
         items: items.map(item => ({
           productId: item.id,
           quantity: item.quantity,
-          price: item.price, // initial price
-          // userId
-          // address
+          price: item.price,
         })),
       },
         {
@@ -333,9 +334,9 @@ export default function PaymentPage() {
                 <div className="col-span-2 text-center">Action</div>
               </div>
               {items.map(item => {
-                const unitDiscount = Math.round((item.price * item.discountPercent) / 100);
-                const discountedUnit = item.price - unitDiscount;
-                const total = discountedUnit * item.quantity;
+                // const unitDiscount = Math.round((item.price * item.discountPercent) / 100);
+                // const discountedUnit = item.price - unitDiscount;
+                const total = item.quantity; //discountedUnit *
                 return (
                   <div
                     key={item.id}
@@ -359,16 +360,16 @@ export default function PaymentPage() {
                           </h3>
                           <div className="text-xs text-gray-500 mt-1">
                             <span>Brand: {item.brand}</span>
-                            <span className="mx-1">•</span>
-                            <span>Color: {item.color}</span>
-                            <span className="mx-1">•</span>
-                            <span>Size: {item.size}</span>
+                            {/* <span className="mx-1">•</span> */}
+                            {/* <span>Color: {item.color}</span> */}
+                            {/* <span className="mx-1">•</span> */}
+                            {/* <span>Size: {item.size}</span> */}
                           </div>
                           <div className="text-xs text-gray-500 mt-1">
                             MRP: <span className="line-through">{currency(item.price * item.quantity)}</span>
-                            {item.discountPercent > 0 && (
+                            {/* {item.discountPercent > 0 && (
                               <span className="ml-2 text-green-600">({item.discountPercent}% off)</span>
-                            )}
+                            )} */}
                           </div>
                         </div>
                       </div>
@@ -403,12 +404,12 @@ export default function PaymentPage() {
                     <div className="col-span-2 w-full md:text-center mb-4 md:mb-0">
                       <div className="flex flex-col items-start md:items-center">
                         <span className="font-semibold text-lg text-gray-900">{currency(total)}</span>
-                        {item.discountPercent > 0 && (
+                        {/* {item.discountPercent > 0 && (
                           <div className="text-xs text-gray-500 mt-1">
                             <span className="line-through mr-1">{currency(item.price * item.quantity)}</span>
                             <span className="text-green-600">({item.discountPercent}% off)</span>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     </div>
 
@@ -504,12 +505,12 @@ export default function PaymentPage() {
                   <span>Sub Total ({items.reduce((s, it) => s + it.quantity, 0)} items)</span>
                   <span>{currency(totals.subTotal)}</span>
                 </div>
-                {totals.discount > 0 && (
+                {/* {totals.discount > 0 && (
                   <div className="flex justify-between text-sm text-green-700">
                     <span>Discount</span>
                     <span>-{currency(totals.discount)}</span>
                   </div>
-                )}
+                )} */}
                 <div className="flex justify-between text-sm">
                   <span>Shipping</span>
                   <span>{totals.shipping > 0 ? currency(totals.shipping) : "Free"}</span>
