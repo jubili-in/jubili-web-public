@@ -96,9 +96,9 @@ function ProductContent() {
   }
 
   const price = product?.price ?? 0;
-  const discount = product?.discount ?? 0;
-  const hasDiscount = discount > 0;
-  const discountedPrice = hasDiscount ? price - (price * discount) / 100 : price;
+  // const discount = product?.discount ?? 0;
+  // const hasDiscount = discount > 0;
+  const discountedPrice = product?.currentPrice ? product.currentPrice : price; 
 
   return (
     <div className="p-4">
@@ -144,13 +144,13 @@ function ProductContent() {
 
           {/* Price */}
           <div className="mt-4 flex items-center gap-3">
-            <div className="text-2xl font-semibold">₹{discountedPrice.toFixed(2)}</div>
-            {hasDiscount && (
+            <div className="text-2xl font-semibold">₹{discountedPrice?.toFixed(2)}</div>
+            {/* {hasDiscount && (
               <>
                 <span className="text-gray-400 line-through">₹{product.price}</span>
                 <span className="text-green-600 font-medium">{product.discount}% off</span>
               </>
-            )}
+            )} */}
           </div>
 
           {/* Description */}
@@ -205,7 +205,7 @@ function ProductContent() {
               <div className="flex gap-2 flex-wrap">
                 {product.gender && <span className="px-2 py-1 rounded-full bg-gray-100">{product.gender}</span>}
                 {product.brand && <span className="px-2 py-1 rounded-full bg-gray-100">{product.brand}</span>}
-                {product.color && <span className="px-2 py-1 rounded-full bg-gray-100">{product.color}</span>}
+                {/* {product.color && <span className="px-2 py-1 rounded-full bg-gray-100">{product.color}</span>} */}
               </div>
             </div>
 
@@ -214,7 +214,7 @@ function ProductContent() {
             <div>
               <div className="text-sm text-gray-500 mb-2">Size</div>
               <div className="flex gap-2">
-                <span className="px-3 py-1 rounded-full border bg-yellow-400/20 text-yellow-800 text-sm">{product.size || '—'}</span>
+                {/* <span className="px-3 py-1 rounded-full border bg-yellow-400/20 text-yellow-800 text-sm">{product.size || '—'}</span> */}
               </div>
             </div>
             {/* <div>
@@ -226,8 +226,8 @@ function ProductContent() {
             <div>
               <div className="text-sm text-gray-500 mb-2">Color</div>
               <div className="flex gap-2 items-center">
-                <span className="h-5 w-5 rounded-full border" style={{ backgroundColor: product.color?.toLowerCase() }} />
-                <span className="text-sm text-gray-700">{product.color || '—'}</span>
+                {/* <span className="h-5 w-5 rounded-full border" style={{ backgroundColor: product.color?.toLowerCase() }} />
+                <span className="text-sm text-gray-700">{product.color || '—'}</span> */}
               </div>
             </div>
             <div className="text-sm text-gray-600">Gender: {product.gender || '—'}</div>

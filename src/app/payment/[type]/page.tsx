@@ -47,6 +47,12 @@ export default function PaymentPage() {
 
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+  useEffect(( ) => { 
+    console.log(cartLoading, "this is cartLoading baler");
+    console.log(cart, "this is cart baler"); 
+    console.log(singleProduct, "this is singleProduct baler");
+  }, [cartLoading]); 
+
   // Demo addresses
   const [addresses] = useState<DemoAddress[]>([
     {
@@ -141,7 +147,7 @@ export default function PaymentPage() {
     if (isCartPayment && cart) {
       return {
         subTotal: cart.totalOriginalPrice,
-        discount: cart.totalDiscount,
+        // discount: cart.totalDiscount,
         shipping: cart.shippingCharge,
         grandTotal: cart.finalTotal,
       };
@@ -336,7 +342,7 @@ export default function PaymentPage() {
               {items.map(item => {
                 // const unitDiscount = Math.round((item.price * item.discountPercent) / 100);
                 // const discountedUnit = item.price - unitDiscount;
-                const total = item.quantity; //discountedUnit *
+                const total = item.price  * item.quantity; //discountedUnit *
                 return (
                   <div
                     key={item.id}
