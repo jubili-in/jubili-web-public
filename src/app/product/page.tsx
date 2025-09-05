@@ -56,10 +56,10 @@ function ProductContent() {
         ))}
       </div>
       <p className="text-gray-700">{product.productDescription}</p>
-      <div className="text-sm text-gray-600">₹{product.price} {product.discount ? `(−${product.discount}%)` : ''}</div>
+      <div className="text-sm text-gray-600">₹{product.price} </div>  {/*{product.discount ? `(−${product.discount}%)` : ''} */}
       <div className="text-sm text-gray-600">Brand: {product.brand}</div>
-      <div className="text-sm text-gray-600">Color: {product.color}</div>
-      <div className="text-sm text-gray-600">Size: {product.size}</div>
+      {/* <div className="text-sm text-gray-600">Color: {product.color}</div>
+      <div className="text-sm text-gray-600">Size: {product.size}</div> */}
       <div className="text-sm text-gray-600">Stock: {product.stock}</div>
     </div>
   );

@@ -19,8 +19,8 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
   const { token } = useAuth();
   const { addToCart, loading: cartLoading } = useCart();
 
-  const discountedPrice = product.price - (product.price * product.discount) / 100;
-  const hasDiscount = product.discount > 0;
+  // const discountedPrice = product.price - (product.price * product.discount) / 100;
+  // const hasDiscount = product.discount > 0;
   const hasImages = product.imageUrls && product.imageUrls.length > 0;
 
   const handleImageError = useCallback(() => {
@@ -87,15 +87,15 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
       <div className="relative z-10 py-5">
         {/* Top Row */}
         <Link href={`/product/${product.productId}`}>
-        <div className="flex items-start justify-between mb-1 w-full md:w-2/3 lg:w-1/2 px-4">
-          <div>
-            <h2 className="text-xl font-semibold">{product.productName}</h2>
-            <p className="text-sm text-gray-500">{product.brand || "Brand"}</p>
-          </div>
-          <div className="w-15" />
-          <div className="flex items-center gap-15">
-            <div className="flex items-center gap-2">
-              {hasDiscount ? (
+          <div className="flex items-start justify-between mb-1 w-full md:w-2/3 lg:w-1/2 px-4">
+            <div>
+              <h2 className="text-xl font-semibold">{product.productName}</h2>
+              <p className="text-sm text-gray-500">{product.brand || "Brand"}</p>
+            </div>
+            <div className="w-15" />
+            <div className="flex items-center gap-15">
+              <div className="flex items-center gap-2">
+                {/* {hasDiscount ? (
                 <>
                   <div className="text-green-600 text-lg font-semibold">
                     ₹{discountedPrice.toFixed(2)}
@@ -108,19 +108,21 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
                   </span>
                 </>
               ) : (
+               
+              )} */}
+
                 <div className="text-green-600 text-lg font-semibold">
                   ₹{product.price}
                 </div>
-              )}
-            </div>
-            {/* <button 
+              </div>
+              {/* <button 
               className="text-2xl px-2"
               aria-label="More options"
             >
               <b>⋮</b>
             </button> */}
+            </div>
           </div>
-        </div>
         </Link>
 
         {/* Thumbnails */}
@@ -147,7 +149,7 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
 
         {/* Actions Row */}
         <div className="w-full md:w-2/3 lg:w-1/2 flex items-center gap-6 mb-2 px-4">
-          <button 
+          <button
             onClick={handleLikeToggle}
             disabled={likeLoading}
             className="ml-2 flex items-center gap-4 disabled:opacity-50"
@@ -173,15 +175,15 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
             <span className='text-xs'>Add to Wishlist</span>
           </button>
           <div className="flex-15" />
-          <button 
+          <button
             className="flex items-center gap-1 text-gray-700"
             aria-label="Share product"
           >
-            <img 
-              src="/icons/share.svg" 
-              alt="Share" 
-              width={24} 
-              height={24} 
+            <img
+              src="/icons/share.svg"
+              alt="Share"
+              width={24}
+              height={24}
             />
           </button>
           <button className="bg-black text-white rounded px-4 py-1 text-sm">
@@ -197,11 +199,11 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
             descExpanded
               ? {}
               : {
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }
           }
           onClick={toggleDescription}
           onKeyPress={(e) => {
@@ -213,8 +215,8 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
           tabIndex={0}
           title={descExpanded ? "Show less" : "Show more"}
         >
-          {product.productDescription || 
-           `${product.productName} - ${product.gender} ${product.size} ${product.color}`}
+          {product.productDescription ||
+            `${product.productName} - ${product.gender} `}   {/*${product.size} ${product.color}*/}
           {!descExpanded && (
             <span className="text-blue-500 ml-2">See more</span>
           )}
@@ -227,10 +229,10 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
         <div className="w-full md:w-2/3 lg:w-1/2 px-4 mb-2">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             {product.gender && <span>{product.gender}</span>}
-            {product.gender && product.size && <span>•</span>}
+            {/* {product.gender && product.size && <span>•</span>}
             {product.size && <span>{product.size}</span>}
             {product.size && product.color && <span>•</span>}
-            {product.color && <span>{product.color}</span>}
+            {product.color && <span>{product.color}</span>} */}
           </div>
         </div>
 
@@ -241,14 +243,13 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
               Make it yours
             </button>
           </Link>
-          <button 
+          <button
             onClick={() => addToCart(product.productId)}
             disabled={cartLoading}
-            className={`${
-              cartLoading ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-300 cursor-pointer'
-            } text-white rounded-full px-3 py-3 text-lg font-semibold transition-colors`}
+            className={`${cartLoading ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-300 cursor-pointer'
+              } text-white rounded-full px-3 py-3 text-lg font-semibold transition-colors`}
           >
-            <img src="/icons/cart-bag.svg" alt="Add to Cart" className='pl-2 pr-2 h-5'/>
+            <img src="/icons/cart-bag.svg" alt="Add to Cart" className='pl-2 pr-2 h-5' />
           </button>
           <div className="flex-1" />
         </div>
