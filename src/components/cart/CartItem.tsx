@@ -10,12 +10,18 @@ export const CartItem = ({ item }: CartItemProps) => {
   return (
     <div className="flex gap-4 border-b border-gray-200 py-4">
       <div className="relative h-24 w-24 flex-shrink-0">
-        <Image
-          src={item.imageUrl}
-          alt={item.productName}
-          fill
-          className="object-cover rounded-md"
-        />
+        {item.imageUrl ? (
+          <Image
+            src={item.imageUrl}
+            alt={item.productName}
+            fill
+            className="object-cover rounded-md"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-md">
+            <span className="text-gray-400 text-sm">No Image</span>
+          </div>
+        )}
       </div>
       
       <div className="flex flex-1 flex-col">

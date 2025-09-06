@@ -116,26 +116,25 @@ export default function PaymentPage() {
         id: item.productId,
         name: item.productName,
         brand: item.brand,
-        // color: item.color,
-        // size: item.size,
-        price: item.price, // init price
-        currentPrice: item.totalCurrentPrice, // discount percent
+        category: item.category,
+        description: item.description,
+        price: item.price, // Original price per unit
+        currentPrice: item.currentPrice, // Current price per unit
         quantity: item.quantity,
         imageUrl: item.imageUrl,
-        totalCurrentPrice: item.totalCurrentPrice, //current price after discount
+        totalCurrentPrice: item.totalCurrentPrice, // Current total for this item
       }));
     } else if (isSingleProductPayment && singleProduct) {
       return [{
         id: singleProduct.productId,
         name: singleProduct.productName,
         brand: singleProduct.brand,
-        // color: singleProduct.color,
-        // size: singleProduct.size,
+        // category: singleProduct.category || '',
+        // description: singleProduct.description || '',
         price: singleProduct.price,
-        // discountPercent: singleProduct.discount,
+        currentPrice: singleProduct.currentPrice,
         quantity: quantity,
         imageUrl: singleProduct.imageUrls[0] || '/images/logo.svg',
-        // totalCurrentPrice: (singleProduct.price - (singleProduct.price * singleProduct.discount / 100)) * quantity,
         totalCurrentPrice: singleProduct.currentPrice * quantity
       }];
     }
@@ -147,31 +146,24 @@ export default function PaymentPage() {
     if (isCartPayment && cart) {
       return {
         subTotal: cart.totalOriginalPrice,
-        // discount: cart.totalDiscount,
-        shipping: cart.shippingCharge,
+        currentTotal: cart.totalCurrentPrice,
+        discount: cart.totalOriginalPrice - cart.totalCurrentPrice,
+        deliveryCharges: cart.totalDeliveryCharges,
+        platformCharges: cart.totalPlatformCharges,
         grandTotal: cart.finalTotal,
       };
     } else if (isSingleProductPayment && singleProduct) {
       const subTotal = singleProduct.price * quantity;
-      // const discount = Math.round((subTotal * singleProduct.discount) / 100);
-      // const shipping = subTotal - discount > 2999 ? 0 : 99;
-      const shipping = singleProduct.currentPrice * quantity > 2999 ? 0 : 99;
-      // const grandTotal = subTotal - discount + shipping;
-      const grandTotal = singleProduct.currentPrice * quantity + shipping;
-      return { subTotal, shipping, grandTotal };
+      const currentTotal = singleProduct.currentPrice * quantity;
+      const discount = subTotal - currentTotal;
+      const deliveryCharges =  49;
+      const platformCharges = 14.16; // Approximate platform charges
+      const grandTotal = currentTotal + deliveryCharges + platformCharges;
+      return { subTotal, currentTotal, discount, deliveryCharges, platformCharges, grandTotal };
     }
-    return { subTotal: 0, discount: 0, shipping: 0, grandTotal: 0 };
+    return { subTotal: 0, currentTotal: 0, discount: 0, deliveryCharges: 0, platformCharges: 0, grandTotal: 0 };
   }, [isCartPayment, cart, isSingleProductPayment, singleProduct, quantity]);
 
-  const onQty = (id: string, delta: number) => {
-    if (isCartPayment) {
-      // For cart payments, quantity changes are handled by cart context
-      return;
-    } else if (isSingleProductPayment) {
-      // For single product payments, update local quantity
-      setQuantity(prev => Math.max(1, prev + delta));
-    }
-  };
 
   // const onRemove = (id: string) => {
   //   if (isCartPayment) {
@@ -241,6 +233,9 @@ export default function PaymentPage() {
               }
             );
 
+            console.log("data dot order dot id", data.order.id);
+            console.log("Sudhu data", data);
+            
             if (verify.data.success) {
               alert("Payment Successful!");
             } else {
@@ -334,26 +329,21 @@ export default function PaymentPage() {
             {/* Items */}
             <div className="bg-white rounded-2xl border border-gray-300 overflow-hidden">
               <div className="hidden md:grid grid-cols-12 items-center px-6 py-3 border-b border-gray-300 text-gray-500 font-semibold text-sm">
-                <div className="col-span-5">Product Info</div>
-                <div className="col-span-3 text-center">Quantity</div>
+                <div className="col-span-10">Product Info</div>
                 <div className="col-span-2 text-center">Total</div>
-                <div className="col-span-2 text-center">Action</div>
               </div>
               {items.map(item => {
-                // const unitDiscount = Math.round((item.price * item.discountPercent) / 100);
-                // const discountedUnit = item.price - unitDiscount;
-                const total = item.price  * item.quantity; //discountedUnit *
                 return (
                   <div
                     key={item.id}
                     className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center px-6 py-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
                   >
                     {/* info */}
-                    <div className="col-span-5 w-full md:w-auto mb-4 md:mb-0">
+                    <div className="col-span-8 w-full md:w-auto mb-4 md:mb-0">
                       <div className="flex items-center gap-4">
                         <div className="relative w-16 h-16 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
                           <Image
-                            src={item.imageUrl}
+                            src={item.imageUrl ?? ""}
                             alt={item.name}
                             width={64}
                             height={64}
@@ -366,72 +356,54 @@ export default function PaymentPage() {
                           </h3>
                           <div className="text-xs text-gray-500 mt-1">
                             <span>Brand: {item.brand}</span>
-                            {/* <span className="mx-1">•</span> */}
-                            {/* <span>Color: {item.color}</span> */}
-                            {/* <span className="mx-1">•</span> */}
-                            {/* <span>Size: {item.size}</span> */}
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            MRP: <span className="line-through">{currency(item.price * item.quantity)}</span>
-                            {/* {item.discountPercent > 0 && (
-                              <span className="ml-2 text-green-600">({item.discountPercent}% off)</span>
+                            {/* {item.category && (
+                              <>
+                                <span className="mx-1">•</span>
+                                <span>Category: {item.category}</span>
+                              </>
                             )} */}
                           </div>
+                          {item.price > item.currentPrice && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              MRP: <span className="line-through">{currency(item.price * item.quantity)}</span>
+                              <span className="ml-2 text-green-600">
+                                ({Math.round(((item.price - item.currentPrice) / item.price) * 100)}% off)
+                              </span>
+                            </div>
+                          )}
+                          {/* {item.description && (
+                            <div className="text-xs text-gray-400 mt-1 truncate">
+                              {item.description}
+                            </div>
+                          )} */}
                         </div>
                       </div>
                     </div>
 
                     {/* qty */}
-                    <div className="flex items-center gap-2 col-span-3 w-full md:justify-center mb-4 md:mb-0">
-                      {isSingleProductPayment ? (
-                        <>
-                          <button
-                            className="w-8 h-8 rounded-full border border-gray-300 text-sm font-bold flex items-center justify-center hover:bg-gray-100 transition"
-                            onClick={() => onQty(item.id, -1)}
-                            aria-label="Decrease quantity"
-                          >
-                            <FaMinus size={10} />
-                          </button>
+                    <div className="flex items-center gap-2 col-span-2 w-full md:justify-center mb-4 md:mb-0">
+                      {/* {isSingleProductPayment ? (
+                        <>    
                           <span className="mx-2 font-medium text-base min-w-[2ch] text-center">{item.quantity}</span>
-                          <button
-                            className="w-8 h-8 rounded-full border border-gray-300 text-sm font-bold flex items-center justify-center hover:bg-gray-100 transition"
-                            onClick={() => onQty(item.id, 1)}
-                            aria-label="Increase quantity"
-                          >
-                            <FaPlus size={10} />
-                          </button>
                         </>
-                      ) : (
+                      ) : ( */}
                         <span className="font-medium text-base">{item.quantity}</span>
-                      )}
+                      
                     </div>
 
                     {/* total */}
                     <div className="col-span-2 w-full md:text-center mb-4 md:mb-0">
                       <div className="flex flex-col items-start md:items-center">
-                        <span className="font-semibold text-lg text-gray-900">{currency(total)}</span>
-                        {/* {item.discountPercent > 0 && (
+                        <span className="font-semibold text-lg text-gray-900">{currency(item.totalCurrentPrice)}</span>
+                        {item.price > item.currentPrice && (
                           <div className="text-xs text-gray-500 mt-1">
                             <span className="line-through mr-1">{currency(item.price * item.quantity)}</span>
-                            <span className="text-green-600">({item.discountPercent}% off)</span>
+                            <span className="text-green-600">
+                              ({Math.round(((item.price - item.currentPrice) / item.price) * 100)}% off)
+                            </span>
                           </div>
-                        )} */}
+                        )}
                       </div>
-                    </div>
-
-                    {/* action */}
-                    <div className="col-span-2 w-full md:text-center">
-                      {isSingleProductPayment ? (
-                        <button
-                          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-100 transition text-gray-500 hover:text-red-600"
-                          // onClick={() => onRemove(item.id)}
-                          aria-label="Remove item from checkout"
-                        >
-                          <FaTrash size={14} />
-                        </button>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
                     </div>
                   </div>
                 );
@@ -511,15 +483,19 @@ export default function PaymentPage() {
                   <span>Sub Total ({items.reduce((s, it) => s + it.quantity, 0)} items)</span>
                   <span>{currency(totals.subTotal)}</span>
                 </div>
-                {/* {totals.discount > 0 && (
+                {totals.discount > 0 && (
                   <div className="flex justify-between text-sm text-green-700">
                     <span>Discount</span>
                     <span>-{currency(totals.discount)}</span>
                   </div>
-                )} */}
+                )}
                 <div className="flex justify-between text-sm">
-                  <span>Shipping</span>
-                  <span>{totals.shipping > 0 ? currency(totals.shipping) : "Free"}</span>
+                  <span>Delivery Charges</span>
+                  <span>{totals.deliveryCharges > 0 ? currency(totals.deliveryCharges) : "Free"}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Platform Charges</span>
+                  <span>{currency(totals.platformCharges)}</span>
                 </div>
                 <hr className="my-4" />
                 <div className="flex justify-between items-center text-lg font-bold">

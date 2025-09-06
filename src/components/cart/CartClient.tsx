@@ -188,8 +188,8 @@ export const CartClient = () => {
                   <Link href={`/product/${item.productId}`} className="flex items-center gap-4 col-span-5 w-full md:w-auto mb-4 md:mb-0">
                     <div className="relative w-16 h-16 flex-shrink-0">
                       <Image 
-                        src={item.imageUrl} 
-                        alt={item.productName} 
+                        src={item.imageUrl ?? "/placeholder.png"} 
+                        alt={item.productName ?? "Product image"} 
                         fill
                         className="object-cover rounded-lg" 
                         sizes="64px"
@@ -200,14 +200,12 @@ export const CartClient = () => {
                         {item.productName}
                       </h3>
                       <div className="text-xs text-gray-500 mt-1">
-                        {/* <span>Brand: {item.brand}</span>
+                        <span>Brand: {item.brand}</span>
                         <span className="mx-1">•</span>
-                        <span>Color: {item.color}</span>
-                        <span className="mx-1">•</span>
-                        <span>Size: {item.size}</span> */}
+                        <span>Category: {item.category}</span>
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {/* Material: {item.material} */}
+                      <div className="text-xs text-gray-400 mt-1 truncate">
+                        {item.description}
                       </div>
                     </div>
                   </Link>
@@ -242,16 +240,16 @@ export const CartClient = () => {
                       <span className="font-semibold text-lg text-gray-900">
                         ₹{item.totalCurrentPrice.toLocaleString()}
                       </span>
-                      {/* {item.discountOnProduct > 0 && (
+                      {item.price > item.currentPrice && (
                         <div className="text-xs text-gray-500 mt-1">
                           <span className="line-through mr-1">
                             ₹{(item.price * item.quantity).toLocaleString()}
                           </span>
                           <span className="text-green-600">
-                            ({item.discountOnProduct}% off)
+                            ({Math.round(((item.price - item.currentPrice) / item.price) * 100)}% off)
                           </span>
                         </div>
-                      )} */}
+                      )}
                     </div>
                   </div>
 
@@ -302,21 +300,26 @@ export const CartClient = () => {
                 <span>₹{cart.totalOriginalPrice.toLocaleString()}</span>
               </div>
               
-              {cart.totalDiscount > 0 && (
+              {(cart.totalOriginalPrice - cart.totalCurrentPrice) > 0 && (
                 <div className="flex justify-between text-sm text-green-700">
                   <span>Discount</span>
-                  <span>-₹{cart.totalDiscount.toLocaleString()}</span>
+                  <span>-₹{(cart.totalOriginalPrice - cart.totalCurrentPrice).toLocaleString()}</span>
                 </div>
               )}
               
               <div className="flex justify-between text-sm">
-                <span>Shipping</span>
+                <span>Delivery Charges</span>
                 <span>
-                  {cart.shippingCharge > 0 
-                    ? `₹${cart.shippingCharge.toLocaleString()}`
+                  {cart.totalDeliveryCharges > 0 
+                    ? `₹${cart.totalDeliveryCharges.toLocaleString()}`
                     : 'Free'
                   }
                 </span>
+              </div>
+              
+              <div className="flex justify-between text-sm">
+                <span>Platform Charges</span>
+                <span>₹{cart.totalPlatformCharges.toLocaleString()}</span>
               </div>
               
               <hr className="my-4" />
