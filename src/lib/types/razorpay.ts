@@ -1,8 +1,8 @@
 export interface RazorpayOrder {
-    id: string;
-    amount: number;
-    currency: string;
-  }
+  id: string;
+  amount: number;
+  currency: string;
+}
   
 export interface RazorpayOrderResponse {
   success: boolean;

@@ -6,6 +6,7 @@ import CustomButton from "@/components/ui/CustomButton";
 import AuthPopup from "@/components/shared/AuthPopup";
 import Navbar from "@/components/layout/Navbar";
 import PageHeading from "@/components/shared/PageHeading";
+import CreateAddress from "@/components/layout/CreateAddress";
 
 // Placeholder orders data
 const sampleOrders = [
@@ -132,76 +133,7 @@ export default function UserProfile() {
                 {/* My Addresses Section */}
                 <section className="mb-8">
                     <div className="py-4 text-2xl font-bold">My Addresses</div>
-                    <div className="bg-white rounded-2xl border border-gray-300 p-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Address 1 - Default */}
-                            <div className="border border-gray-200 rounded-xl p-6 relative">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold">Home</div>
-                                            <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Default</span>
-                                        </div>
-                                    </div>
-                                    <button className="text-gray-400 hover:text-gray-600">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div className="text-gray-700 leading-relaxed">
-                                    <div className="font-medium">{user.name}</div>
-                                    <div className="mt-1">123 Main Street, Apartment 4B</div>
-                                    <div>New Delhi, Delhi 110001</div>
-                                    <div className="mt-2 text-sm text-gray-600">Phone: +91 98765 43210</div>
-                                </div>
-                            </div>
-
-                            {/* Address 2 */}
-                            <div className="border border-gray-200 rounded-xl p-6 relative">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                                            <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold">Office</div>
-                                        </div>
-                                    </div>
-                                    <button className="text-gray-400 hover:text-gray-600">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div className="text-gray-700 leading-relaxed">
-                                    <div className="font-medium">{user.name}</div>
-                                    <div className="mt-1">456 Business Park, Floor 8</div>
-                                    <div>Gurgaon, Haryana 122001</div>
-                                    <div className="mt-2 text-sm text-gray-600">Phone: +91 98765 43210</div>
-                                </div>
-                            </div>
-
-                            {/* Add New Address Button */}
-                            <div id="add-address" className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors cursor-pointer md:col-span-2">
-                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                    </svg>
-                                </div>
-                                <div className="font-medium">Add New Address</div>
-                                <div className="text-sm text-gray-400 mt-1">+ Add delivery address</div>
-                            </div>
-                        </div>
-                    </div>
+                    <CreateAddress/>
                 </section>
 
                 {/* My Orders Section */}
