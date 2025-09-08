@@ -34,6 +34,7 @@ export const useCart = (): UseCartReturn => {
 
     try {
       const cartData = await userActionsService.getCart(userId);
+      console.log(cartData);
       setCart(cartData);
       return cartData;
     } catch (err) {

@@ -238,12 +238,12 @@ export const CartClient = () => {
                   <div className="col-span-2 w-full md:text-center mb-4 md:mb-0">
                     <div className="flex flex-col items-start md:items-center">
                       <span className="font-semibold text-lg text-gray-900">
-                        ₹{item.totalCurrentPrice.toLocaleString()}
+                        ₹{item.totalCurrentPrice}
                       </span>
                       {item.price > item.currentPrice && (
                         <div className="text-xs text-gray-500 mt-1">
                           <span className="line-through mr-1">
-                            ₹{(item.price * item.quantity).toLocaleString()}
+                            ₹{(item.price * item.quantity)}
                           </span>
                           <span className="text-green-600">
                             ({Math.round(((item.price - item.currentPrice) / item.price) * 100)}% off)
@@ -297,13 +297,13 @@ export const CartClient = () => {
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-sm">
                 <span>Sub Total ({cart.totalItems} items)</span>
-                <span>₹{cart.totalOriginalPrice.toLocaleString()}</span>
+                <span>₹{cart.totalOriginalPrice}</span>
               </div>
               
               {(cart.totalOriginalPrice - cart.totalCurrentPrice) > 0 && (
                 <div className="flex justify-between text-sm text-green-700">
                   <span>Discount</span>
-                  <span>-₹{(cart.totalOriginalPrice - cart.totalCurrentPrice).toLocaleString()}</span>
+                  <span>-₹{(cart.totalOriginalPrice - cart.totalCurrentPrice)}</span>
                 </div>
               )}
               
@@ -311,7 +311,7 @@ export const CartClient = () => {
                 <span>Delivery Charges</span>
                 <span>
                   {cart.totalDeliveryCharges > 0 
-                    ? `₹${cart.totalDeliveryCharges.toLocaleString()}`
+                    ? `₹${cart.totalDeliveryCharges}`
                     : 'Free'
                   }
                 </span>
@@ -319,14 +319,14 @@ export const CartClient = () => {
               
               <div className="flex justify-between text-sm">
                 <span>Platform Charges</span>
-                <span>₹{cart.totalPlatformCharges.toLocaleString()}</span>
+                <span>₹{cart.totalPlatformCharges}</span>
               </div>
               
               <hr className="my-4" />
               
               <div className="flex justify-between items-center text-lg font-bold">
                 <span>Total</span>
-                <span>₹{cart.finalTotal.toLocaleString()}</span>
+                <span>₹{cart.finalTotal}</span>
               </div>
             </div>
 
@@ -347,7 +347,7 @@ export const CartClient = () => {
             </div>
 
             <CustomButton
-              label={`Checkout Now (₹${cart.finalTotal.toLocaleString()})`}
+              label={`Checkout Now (₹${cart.finalTotal})`}
               loading={loading}
               onClick={handleCheckout}
             />
