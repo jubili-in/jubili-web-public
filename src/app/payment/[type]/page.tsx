@@ -16,6 +16,7 @@ import { useToastActions } from "@/hooks/useToastActions";
 import Script from "next/script";
 import axios from "axios";
 import { RazorpayOptions, RazorpayOrderResponse } from "@/lib/types/razorpay";
+import { subscribeOrderSSE } from "@/hooks/useOrderSse";
 
 type DemoAddress = {
   id: string;
@@ -38,7 +39,7 @@ export default function PaymentPage() {
   const { type } = params;
   const { userId, token, user } = useAuth();
   const { cart, loading: cartLoading, fetchCart } = useCart();
-  const { showError } = useToastActions();
+  const { showError, showSuccess, showInfo } = useToastActions();
 
   const [singleProduct, setSingleProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
@@ -179,10 +180,34 @@ export default function PaymentPage() {
 
   const handlePayment = async (): Promise<void> => {
     if (!razorpayLoaded) {
-      alert("Razorpay not loaded yet");
+      showError("Error", "Razorpay SDK not loaded yet. Please try again in a moment.", 3000);
       return;
     }
+    
+    // SSE
+    if (user?.userId) {
+      subscribeOrderSSE(
+        user.userId,
+        (event) => {
+          console.log("SSE Event:", event);
 
+          if (event.type === "ORDER_CREATING") {
+            showInfo("Info", "Order is being created. Please wait...", 4000);
+            console.log('Order is being created')
+          }
+          if (event.type === "ORDER_CREATED") {
+            showSuccess("Success", `Order created successfully! Order ID: ${event.orderId}`, 5000)
+            console.log('Order created successfully')
+          }
+          if (event.type === "ORDER_FAILED") {
+            showError("Order Failed", event.message || "Order failed", 5000);
+          }
+        },
+        () => {
+          console.log("SSE closed after final event.");
+        }
+      );
+    }
     try {
       const { data } = await axios.post<RazorpayOrderResponse>(`${baseUrl}/api/payment/razorpay/order`, {
         amount: totals.grandTotal,
