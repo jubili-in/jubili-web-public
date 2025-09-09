@@ -92,12 +92,12 @@ export default function AddressMap({ onSelectAddress }: Props) {
       center={currentPos}
       zoom={5}
       style={{ width: "100%", height: "100%" }}
+      className="z-2"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {/* 👇 Recenter when geolocation is updated */}
       <RecenterMap coords={currentPos} />
       <LocationMarker onSelectAddress={onSelectAddress} />
     </MapContainer>

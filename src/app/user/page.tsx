@@ -7,6 +7,7 @@ import AuthPopup from "@/components/shared/AuthPopup";
 import Navbar from "@/components/layout/Navbar";
 import PageHeading from "@/components/shared/PageHeading";
 import CreateAddress from "@/components/layout/CreateAddress";
+import ManageAddress from "@/components/ui/ManageAddress";
 
 // Placeholder orders data
 const sampleOrders = [
@@ -74,65 +75,69 @@ export default function UserProfile() {
                 <PageHeading title="My Account" />
                 <div className="bg-white rounded-2xl border border-gray-300 p-8 shadow-sm mb-8">
                     <div className="space-y-4">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-                                <img src="/icons/user.svg" alt="User" className="w-10 h-10" />
-                            </div>
-                            <div>
-                                <div className="text-xl font-bold">{user.name}</div>
-                                <div className="text-gray-500 text-sm">{user.email}</div>
-                            </div>
+                      {/* User Info + Phone Info */}
+                      <div className="flex flex-col md:flex-row justify-between gap-6 mb-6">
+                        {/* Left: User icon + name + email */}
+                        <div className="flex items-center gap-4">
+                          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
+                            <img src="/icons/user.svg" alt="User" className="w-10 h-10" />
+                          </div>
+                          <div>
+                            <div className="text-xl font-bold">{user.name}</div>
+                            <div className="text-gray-500 text-sm">{user.email}</div>
+                          </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {user.phone && (
-                                <div>
-                                    <div className="text-gray-400 text-xs uppercase mb-1">Phone</div>
-                                    <div className="font-medium">{user.phone}</div>
-                                </div>
-                            )}
-                            <div>
-                                <div className="text-gray-400 text-xs uppercase mb-1">Member Since</div>
-                                <div className="font-medium">
-                                    {new Date(user.createdAt).toLocaleDateString()}
-                                </div>
-                            </div>
-                            {user.userId && (
-                                <div>
-                                    <div className="text-gray-400 text-xs uppercase mb-1">User ID</div>
-                                    <div className="font-mono text-sm">{user.userId}</div>
-                                </div>
-                            )}
+
+                      {/* Right: Phone */}
+                      {user.phone && (
+                        <div className="flex flex-col justify-center">
+                          <div className="text-gray-400 text-xs uppercase mb-1">Phone</div>
+                          <div className="font-medium">{user.phone}</div>
                         </div>
-                        <div className="pt-6">
-                            <CustomButton
-                                onClick={() => {
-                                    const ordersSection = document.getElementById('my-orders');
-                                    ordersSection?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                                loading={false}
-                                label="My Orders"
-                                backgroundColor="#3a5bd4ff"
-                                // textColor="black"
-                                iconPosition="right"
-                                icon={
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                }
-                            /> 
-                            <span className="px-1"></span>
-                            <CustomButton
-                                onClick={logout}
-                                loading={false}
-                                label="Logout"
-                            />
-                        </div>
+                      )}
+                      
+                      <span></span>
                     </div>
+                    {/* Buttons */}
+                    <div className="pt-6">
+                      <CustomButton
+                        onClick={() => {
+                          const ordersSection = document.getElementById("my-orders");
+                          ordersSection?.scrollIntoView({ behavior: "smooth" });
+                        }}
+                        loading={false}
+                        label="My Orders"
+                        backgroundColor="#3a5bd4ff"
+                        iconPosition="right"
+                        icon={
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        }
+                      />
+                      <span className="px-1"></span>
+                      <CustomButton onClick={logout} loading={false} label="Logout" />
+                    </div>
+                  </div>
                 </div>
+
 
                 {/* My Addresses Section */}
                 <section className="mb-8">
                     <div className="py-4 text-2xl font-bold">My Addresses</div>
+                    <div className="mb-6">
+                      <ManageAddress/>
+                    </div>
                     <CreateAddress/>
                 </section>
 

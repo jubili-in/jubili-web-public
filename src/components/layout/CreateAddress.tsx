@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
+import { useAuth } from "../../hooks/useAuth";
+import { useToastActions } from "../../hooks/useToastActions";
+import { API_BASE_URL, API_ENDPOINTS } from "../../lib/constants/api";
 
 const AddressMap = dynamic(() => import("../ui/AddressMap"), { ssr: false });
 
@@ -14,10 +17,13 @@ interface AddressFormData {
   state: string;
   pincode: string;
   country: string;
-  addressType: "home" | "work" | "other";
+  addressType: "HOME" | "WORK" | "OTHER";
 }
 
 const CreateAddress: React.FC = () => {
+  const { token } = useAuth();
+  const { showSuccess, showError } = useToastActions();
+  
   const [formData, setFormData] = useState<AddressFormData>({
     fullName: "",
     phone: "",
@@ -27,7 +33,7 @@ const CreateAddress: React.FC = () => {
     state: "",
     pincode: "",
     country: "India",
-    addressType: "home",
+    addressType: "HOME",
   });
 
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -54,16 +60,69 @@ const CreateAddress: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!token) {
+      showError("Authentication Required", "Please login to save your address.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      console.log("Address data:", { ...formData, coords });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Prepare the API payload according to the expected format
+      const payload = {
+        addressType: formData.addressType,
+        name: formData.fullName,
+        phoneNumber: formData.phone,
+        altPhoneNumber: formData.phone, // Using same phone as alt if needed
+        addressLine1: formData.addressLine1,
+        addressLine2: formData.addressLine2 || "",
+        city: formData.city,
+        state: formData.state,
+        postalCode: formData.pincode,
+        country: formData.country,
+        latitude: coords?.lat || null,
+        longitude: coords?.lng || null,
+      };
 
-      alert("Address saved successfully!");
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ADDRESS.CREATE}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to save address');
+      }
+
+      if (data.success) {
+        showSuccess("Address Saved!", "Your address has been saved successfully.");
+        
+        // Reset form
+        setFormData({
+          fullName: "",
+          phone: "",
+          addressLine1: "",
+          addressLine2: "",
+          city: "",
+          state: "",
+          pincode: "",
+          country: "India",
+          addressType: "HOME",
+        });
+        setCoords(null);
+      } else {
+        throw new Error(data.message || 'Failed to save address');
+      }
     } catch (error) {
       console.error("Error saving address:", error);
-      alert("Failed to save address. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save address. Please try again.';
+      showError("Save Failed", errorMessage);
     } finally {
       setLoading(false);
     }
@@ -230,9 +289,9 @@ const CreateAddress: React.FC = () => {
               onChange={handleInputChange}
               required
             >
-              <option value="home">Home</option>
-              <option value="work">Work</option>
-              <option value="other">Other</option>
+              <option value="HOME">Home</option>
+              <option value="WORK">Work</option>
+              <option value="OTHER">Other</option>
             </select>
           </div>
 

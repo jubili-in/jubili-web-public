@@ -184,7 +184,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed ${getNavbarPosition()} left-1/2 -translate-x-1/2 z-5000 transition-all duration-300 w-[95vw] max-w-2xl md:w-auto ${
+      className={`fixed ${getNavbarPosition()} left-1/2 -translate-x-1/2 z-50 transition-all duration-300 w-[95vw] max-w-2xl md:w-auto ${
         show ? 'translate-y-0' : (showSearchInput && keyboardOpen ? '-translate-y-0' : 'translate-y-32')
       }`}
     >
