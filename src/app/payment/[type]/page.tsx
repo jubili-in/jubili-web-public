@@ -3,7 +3,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { FaTrash, FaMinus, FaPlus, FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 import PageHeading from "@/components/shared/PageHeading";
 import CustomButton from "@/components/ui/CustomButton";
 import Image from "next/image";

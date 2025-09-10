@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { addressService } from "@/services/address.service";
 import { Address } from "@/lib/types/address";
 import { useAuth } from "@/hooks/useAuth";
+import Image from "next/image";
 
 export default function ManageAddress() {
   const { token } = useAuth();
@@ -44,7 +45,18 @@ export default function ManageAddress() {
   }
 
   if (!addresses.length) {
-    return <div className="text-sm">No addresses found.</div>;
+    return (
+      <div className="flex items-center gap-2 text-sm italic">
+        <Image
+          width={32}
+          height={32}
+          src="/images/FNF.svg"
+          alt="No addresses"
+          style={{ filter: "grayscale(100%)", minWidth: 32, minHeight: 32 }}
+        />
+        No addresses found. Try adding new address.
+      </div>
+    );
   }
 
   const refresh = async () => {
