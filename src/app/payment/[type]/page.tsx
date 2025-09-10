@@ -8,9 +8,11 @@ import PageHeading from "@/components/shared/PageHeading";
 import CustomButton from "@/components/ui/CustomButton";
 import Image from "next/image";
 import { useCart } from "@/hooks/useCart";
+import { useAddress } from "@/hooks/useAddress";
 import { getProductById } from "@/services/product.service";
 import { Product } from "@/lib/types/product";
 import { CartItem } from "@/lib/types/cart";
+// import { Address } from "@/lib/types/address";
 import { useAuth } from "@/hooks/useAuth";
 import { useToastActions } from "@/hooks/useToastActions";
 import Script from "next/script";
@@ -18,16 +20,6 @@ import axios from "axios";
 import { RazorpayOptions, RazorpayOrderResponse } from "@/lib/types/razorpay";
 import { subscribeOrderSSE } from "@/hooks/useOrderSse";
 
-type DemoAddress = {
-  id: string;
-  label: string;
-  name: string;
-  phone: string;
-  street: string;
-  city: string;
-  state: string;
-  postalCode: string;
-};
 
 function currency(amount: number) {
   return `₹${amount.toLocaleString()}`;
@@ -39,6 +31,7 @@ export default function PaymentPage() {
   const { type } = params;
   const { userId, token, user } = useAuth();
   const { cart, loading: cartLoading, fetchCart } = useCart();
+  const { addresses, loading: addressLoading, fetchAddresses } = useAddress();
   const { showError, showSuccess, showInfo } = useToastActions();
 
   const [singleProduct, setSingleProduct] = useState<Product | null>(null);
@@ -54,30 +47,7 @@ export default function PaymentPage() {
     console.log(singleProduct, "this is singleProduct baler");
   }, [cartLoading]); 
 
-  // Demo addresses
-  const [addresses] = useState<DemoAddress[]>([
-    {
-      id: "home",
-      label: "Home",
-      name: "Alex Doe",
-      phone: "9876543210",
-      street: "221B Baker Street",
-      city: "Mumbai",
-      state: "MH",
-      postalCode: "400001",
-    },
-    {
-      id: "office",
-      label: "Office",
-      name: "Alex Doe",
-      phone: "9876543210",
-      street: "Plot 14, Tech Park",
-      city: "Pune",
-      state: "MH",
-      postalCode: "411001",
-    },
-  ]);
-  const [selectedAddressId, setSelectedAddressId] = useState<string>("home");
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
 
   // Determine if this is cart or single product payment
   const isCartPayment = type === 'cart';
@@ -109,6 +79,21 @@ export default function PaymentPage() {
       fetchCart();
     }
   }, [isCartPayment, userId, fetchCart]);
+
+  // Fetch addresses
+  useEffect(() => {
+    if (token) {
+      fetchAddresses();
+    }
+  }, [token, fetchAddresses]);
+
+  // Set default selected address
+  useEffect(() => {
+    if (addresses.length > 0 && !selectedAddressId) {
+      const defaultAddr = addresses.find(addr => addr.isDefault) || addresses[0];
+      setSelectedAddressId(defaultAddr.addressId);
+    }
+  }, [addresses, selectedAddressId]);
 
   // Get items based on payment type
   const items = useMemo(() => {
@@ -175,7 +160,7 @@ export default function PaymentPage() {
   //   router.push('/');
   // };
 
-  const selectedAddress = addresses.find(a => a.id === selectedAddressId) ?? addresses[0];
+  const selectedAddress = addresses.find(a => a.addressId === selectedAddressId) ?? addresses[0];
 
 
   const handlePayment = async (): Promise<void> => {
@@ -214,7 +199,7 @@ export default function PaymentPage() {
         receipt: `rcpt_${Date.now()}`,
         orderId: `order_${Date.now()}`,
         userId: user?.userId,
-        address: addresses[0],
+        address: selectedAddress,
         totalAmount: 100,
         items: items.map(item => ({
           productId: item.id,
@@ -289,7 +274,7 @@ export default function PaymentPage() {
   };
 
   // Show loading state
-  if (loading || (isCartPayment && cartLoading)) {
+  if (loading || (isCartPayment && cartLoading) || addressLoading) {
     return (
       <div className="max-w-6xl mx-auto p-4">
         <PageHeading title="Loading..." />
@@ -442,44 +427,68 @@ export default function PaymentPage() {
                 <a href="/user#add-address" className="text-sm text-blue-600 hover:underline">+ Add new address</a>
               </div>
 
-              <div className="space-y-3">
-                {addresses.map(addr => (
-                  <label key={addr.id} className="flex items-start gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
-                    <input
-                      type="radio"
-                      name="address"
-                      checked={selectedAddressId === addr.id}
-                      onChange={() => setSelectedAddressId(addr.id)}
-                      className="mt-1"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-1">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                        </div>
-                        <div className="font-medium flex items-center gap-2">
-                          <span>{addr.label}</span>
-                          {addr.id === selectedAddressId && (
-                            <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full">Selected</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-sm text-gray-700">
-                        <div className="font-medium">{addr.name} • {addr.phone}</div>
-                        <div className="text-gray-600">{addr.street}, {addr.city}, {addr.state} - {addr.postalCode}</div>
-                      </div>
-                    </div>
-                  </label>
-                ))}
-              </div>
-
-              {selectedAddress && (
-                <div className="mt-4 text-sm text-gray-600">
-                  Delivering to: <span className="font-medium text-gray-800">{selectedAddress.name}</span>, {selectedAddress.street}, {selectedAddress.city}
+              {addresses.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-gray-500 mb-4">No addresses found</div>
+                  <a 
+                    href="/user#add-address" 
+                    className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                  >
+                    Add Your First Address
+                  </a>
                 </div>
+              ) : (
+                <>
+                  <div className="space-y-3">
+                    {addresses.map(addr => (
+                      <label key={addr.addressId} className="flex items-start gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
+                        <input
+                          type="radio"
+                          name="address"
+                          checked={selectedAddressId === addr.addressId}
+                          onChange={() => setSelectedAddressId(addr.addressId)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                            </div>
+                            <div className="font-medium flex items-center gap-2">
+                              <span>{addr.addressType || 'Address'}</span>
+                              {addr.isDefault && (
+                                <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full">Default</span>
+                              )}
+                              {addr.addressId === selectedAddressId && (
+                                <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full">Selected</span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-sm text-gray-700">
+                            <div className="font-medium">{addr.name} • {addr.phoneNumber}</div>
+                            <div className="text-gray-600">
+                              {addr.addressLine1}
+                              {addr.addressLine2 ? `, ${addr.addressLine2}` : ''}
+                              <br />
+                              {addr.city}, {addr.state} - {addr.postalCode}
+                              <br />
+                              {addr.country}
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+
+                  {selectedAddress && (
+                    <div className="mt-4 text-sm text-gray-600">
+                      Delivering to: <span className="font-medium text-gray-800">{selectedAddress.name}</span>, {selectedAddress.addressLine1}, {selectedAddress.city}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
