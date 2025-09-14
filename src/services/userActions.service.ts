@@ -1,5 +1,6 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@/lib/constants/api';
 import { CartAction, CartActionResponse, CartDelete, CartResponse } from '@/lib/types/cart';
+import { FavAction, FavActionResponse } from '@/lib/types/userAction';
 
 class UserActionsService {
   async addToCart(data: CartAction): Promise<CartActionResponse> {
@@ -65,6 +66,28 @@ class UserActionsService {
       throw error;
     }
   }
+
+  async addToFav (data: FavAction): Promise<FavActionResponse>{
+try {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.USER_ACTIONS.BASE}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add to cart');
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      throw error;
+    }
+  }
+  
 }
 
 export const userActionsService = new UserActionsService();

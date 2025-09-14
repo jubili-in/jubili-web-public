@@ -51,7 +51,7 @@ export interface CartDelete {
 }
 
 // Helper function for calculating discount percentage in frontend
-export const calculateDiscountPercentage = (originalPrice: number, currentPrice: number): number => {
-  if (originalPrice <= 0) return 0;
-  return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
-};
+// export const calculateDiscountPercentage = (originalPrice: number, currentPrice: number): number => {
+//   if (originalPrice <= 0) return 0;
+//   return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+// };

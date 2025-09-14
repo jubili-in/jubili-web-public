@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { toggleProductLike } from '@/services/product.service';
 import { useAuth } from '@/hooks/useAuth';
 import { useCart } from '@/hooks/useCart';
+import { useFavourite } from '@/hooks/useFavourite';
 
 interface ProductCardProps {
   product: Product;
@@ -16,8 +17,10 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
   const [isLiked, setIsLiked] = useState(product.isLiked ?? false);
   const [likeCount, setLikeCount] = useState(product.likeCount);
   const [likeLoading, setLikeLoading] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
   const { token } = useAuth();
   const { addToCart, loading: cartLoading } = useCart();
+  const { addToFavorites, loading: favoriteLoading } = useFavourite();
 
   // const discountedPrice = product.price - (product.price * product.discount) / 100;
   // const hasDiscount = product.discount > 0;
@@ -57,6 +60,25 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
       setLikeLoading(false);
     }
   }, [token, likeLoading, isLiked, likeCount, product.productId, onLikeToggle]);
+
+  const handleFavourite = useCallback(async () => {
+    if (!token) {
+      console.warn('User must be logged in to add to favorites');
+      return;
+    }
+
+    if (favoriteLoading) return;
+
+    try {
+      // Optimistic update
+      setIsFavorited(prev => !prev);
+      await addToFavorites(product.productId);
+    } catch (error) {
+      // Revert optimistic update on error
+      setIsFavorited(prev => !prev);
+      console.error("Failed to toggle favorite:", error);
+    }
+  }, [token, product.productId, favoriteLoading, addToFavorites]);
 
   const toggleDescription = useCallback(() => {
     setDescExpanded(prev => !prev);
@@ -152,7 +174,7 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
           <button
             onClick={handleLikeToggle}
             disabled={likeLoading}
-            className="ml-2 flex items-center gap-4 disabled:opacity-50"
+            className="ml-2 flex items-center gap-4 disabled:opacity-50 hover:scale-105 transition-transform cursor-pointer"
             aria-label={isLiked ? 'Unlike product' : 'Like product'}
           >
             <img
@@ -165,14 +187,19 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
             <span className="text-sm text-gray-600">{likeCount}</span>
           </button>
           <div className="flex-1" />
-          <button className="flex items-center gap-1 text-gray-700">
+          <button 
+            onClick={handleFavourite}
+            disabled={favoriteLoading}
+            className="flex items-center gap-1 text-gray-700 disabled:opacity-50 hover:scale-105 transition-transform cursor-pointer"
+          >
             <img
-              src="/icons/heart.svg"
-              alt="Compare"
+              src={isFavorited ? "/icons/heart.svg" : "/icons/heart.svg"}
+              alt="Add to favorites"
               width={24}
               height={24}
+              className={`transition-all ${favoriteLoading ? 'opacity-50' : ''}`}
             />
-            <span className='text-xs'>Add to Wishlist</span>
+            <span className='text-xs'>{'Add to Favourites'}</span>
           </button>
           <div className="flex-15" />
           <button

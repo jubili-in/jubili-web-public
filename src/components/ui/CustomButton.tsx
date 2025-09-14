@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { ReactElement } from "react";
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
   iconPosition?: 'left' | 'right';
   backgroundColor?: string;
   textColor?: string;
+  disabled?: boolean;
 };
 
 export default function CustomButton({ 
@@ -17,12 +19,13 @@ export default function CustomButton({
   icon, 
   iconPosition = 'left',
   backgroundColor = '#262626',
-  textColor = '#ffffff'
+  textColor = '#ffffff',
+  disabled = false,
 }: Props) {
   return (
     <button
       onClick={onClick}
-      disabled={loading}
+      disabled={disabled}
       style={{
         padding: "8px 16px",
         backgroundColor: backgroundColor,
@@ -39,7 +42,7 @@ export default function CustomButton({
       }}
     >
       {loading ? (
-        <img 
+        <Image
           src="/icons/loading.svg" 
           alt="Loading" 
           style={{ 

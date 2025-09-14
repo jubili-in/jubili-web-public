@@ -12,7 +12,6 @@ import { useAddress } from "@/hooks/useAddress";
 import { getProductById } from "@/services/product.service";
 import { Product } from "@/lib/types/product";
 import { CartItem } from "@/lib/types/cart";
-// import { Address } from "@/lib/types/address";
 import { useAuth } from "@/hooks/useAuth";
 import { useToastActions } from "@/hooks/useToastActions";
 import Script from "next/script";
@@ -36,16 +35,16 @@ export default function PaymentPage() {
 
   const [singleProduct, setSingleProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity] = useState(1);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-  useEffect(( ) => { 
-    console.log(cartLoading, "this is cartLoading baler");
-    console.log(cart, "this is cart baler"); 
-    console.log(singleProduct, "this is singleProduct baler");
-  }, [cartLoading]); 
+  // useEffect(( ) => { 
+  //   console.log(cartLoading, "this is cartLoading baler");
+  //   console.log(cart, "this is cart baler"); 
+  //   console.log(singleProduct, "this is singleProduct baler");
+  // }, [cartLoading]); 
 
   const [selectedAddressId, setSelectedAddressId] = useState<string>("");
 
@@ -166,6 +165,11 @@ export default function PaymentPage() {
   const handlePayment = async (): Promise<void> => {
     if (!razorpayLoaded) {
       showError("Error", "Razorpay SDK not loaded yet. Please try again in a moment.", 3000);
+      return;
+    }
+    
+    if (!selectedAddress) {
+      showError("Error", "Please select a delivery address to continue.", 3000);
       return;
     }
     
@@ -551,9 +555,16 @@ export default function PaymentPage() {
               </div>
 
               <CustomButton
-                label={`Pay ${currency(totals.grandTotal)}`}
+                label={addresses.length === 0 ? "Add Address First" : `Pay ${currency(totals.grandTotal)}`}
                 loading={false}
-                onClick={() => handlePayment()}
+                onClick={() => {
+                  if (addresses.length === 0) {
+                    window.location.href = '/user#add-address';
+                  } else {
+                    handlePayment();
+                  }
+                }}
+                disabled={addresses.length === 0}
               />
             </div>
           </div>

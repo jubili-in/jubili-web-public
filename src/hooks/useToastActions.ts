@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 export const useToastActions = () => {
   const { addToast } = useToast();
 
-  const showSuccess = useCallback((title: string, message?: string, duration?: number) => {
+  const showSuccess = useCallback((title: string, message?: string, duration: number = 4000) => {
     addToast({
       type: 'success',
       title,
@@ -13,7 +13,7 @@ export const useToastActions = () => {
     });
   }, [addToast]);
 
-  const showError = useCallback((title: string, message?: string, duration?: number) => {
+  const showError = useCallback((title: string, message?: string, duration: number = 4000) => {
     addToast({
       type: 'error',
       title,
@@ -22,7 +22,7 @@ export const useToastActions = () => {
     });
   }, [addToast]);
 
-  const showWarning = useCallback((title: string, message?: string, duration?: number) => {
+  const showWarning = useCallback((title: string, message?: string, duration: number = 4000) => {
     addToast({
       type: 'warning',
       title,
@@ -31,7 +31,7 @@ export const useToastActions = () => {
     });
   }, [addToast]);
 
-  const showInfo = useCallback((title: string, message?: string, duration?: number) => {
+  const showInfo = useCallback((title: string, message?: string, duration: number = 4000) => {
     addToast({
       type: 'info',
       title,
@@ -46,7 +46,7 @@ export const useToastActions = () => {
     message?: string,
     actionLabel?: string,
     actionCallback?: () => void,
-    duration?: number
+    duration: number = 4000
   ) => {
     addToast({
       type,

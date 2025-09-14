@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
     BASE: '/api/user-actions',
     LIKED_PRODUCTS: '/api/user-actions/liked-products',
     CART: (userId: string) => `/api/user-actions/cart?userId=${userId}`,
+    // FAVOURITE: (userId: string) => `/api/user-actions`,
     // DY_CART_RTE: '/api/user-actions',
     // DELETE_CART: '/api/user-actions'
   },
