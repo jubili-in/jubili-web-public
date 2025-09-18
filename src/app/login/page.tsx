@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, loading, error } = useAuth();
+  const { login, loading, error, loginWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +17,10 @@ export default function LoginPage() {
       // Error is handled by the useAuth hook
       console.error('Login failed:', err);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    loginWithGoogle();
   };
 
   return (
@@ -81,9 +85,13 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-3">
-              <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
+              <button 
+                onClick={handleGoogleLogin}
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
                 <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5" width={20} height={20} />
-                Sign in with Google
+                {loading ? 'Redirecting...' : 'Sign in with Google'}
               </button>
               <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
                 <img src="https://www.svgrepo.com/show/448224/facebook.svg" alt="Facebook" className="w-5 h-5" width={20} height={20} />

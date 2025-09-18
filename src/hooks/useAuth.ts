@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '../services/auth.service';
-import { User, LoginCredentials, SignupCredentials } from '../lib/types/auth';
+import { User, LoginCredentials, SignupCredentials, GoogleOAuthUserData } from '../lib/types/auth';
 import { useToastActions } from './useToastActions';
 
 export const useAuth = () => {
@@ -125,6 +125,40 @@ export const useAuth = () => {
     return null;
   };
 
+  const loginWithGoogle = () => {
+    try {
+      authService.loginWithGoogle();
+    } catch (error) {
+      console.error('Google OAuth initiation failed:', error);
+      showError('Authentication Error', 'Failed to start Google login');
+    }
+  };
+
+  const handleOAuthSuccess = async (token: string, userData: GoogleOAuthUserData) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = authService.handleOAuthSuccess(token, userData);
+      
+      // Store token and user info in localStorage (same as normal login)
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('user_info', JSON.stringify(response.user));
+      
+      setUser(response.user);
+      showSuccess('Login Successful', `Welcome, ${response.user.name}!`);
+      
+      return response;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'OAuth login failed';
+      setError(errorMessage);
+      showError('Login Failed', errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     user,
     token: getToken(),
@@ -135,5 +169,7 @@ export const useAuth = () => {
     signup,
     verifyEmail,
     logout,
+    loginWithGoogle,
+    handleOAuthSuccess,
   };
 };

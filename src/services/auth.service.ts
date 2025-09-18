@@ -1,4 +1,4 @@
-import { AuthResponse, LoginCredentials, SignupCredentials } from '../lib/types/auth';
+import { AuthResponse, LoginCredentials, SignupCredentials, GoogleOAuthUserData } from '../lib/types/auth';
 import { API_ENDPOINTS } from '../lib/constants/api';
 
 // New interface for signup response (different from login)
@@ -78,6 +78,41 @@ class AuthService {
       return data;
     } catch (error) {
       throw error;
+    }
+  }
+
+  /**
+   * Initiate Google OAuth login by redirecting to backend OAuth endpoint
+   */
+  loginWithGoogle(): void {
+    const oauthUrl = `${this.baseUrl}${API_ENDPOINTS.AUTH.GOOGLE_OAUTH}`;
+    window.location.href = oauthUrl;
+  }
+
+  /**
+   * Handle OAuth success by processing the token and user data from URL params
+   */
+  handleOAuthSuccess(token: string, userData: GoogleOAuthUserData): AuthResponse {
+    try {
+      // Parse the user data passed from backend
+      const user = {
+        userId: userData.userId,
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone || '',
+        createdAt: userData.createdAt || new Date().toISOString(),
+        updatedAt: userData.updatedAt || new Date().toISOString(),
+      };
+      
+      return {
+        message: 'OAuth login successful',
+        user: user,
+        token: token
+      };
+      
+    } catch (error) {
+      console.error('OAuth success handling error:', error);
+      throw new Error('Failed to process OAuth login');
     }
   }
 

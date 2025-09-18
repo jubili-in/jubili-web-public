@@ -6,6 +6,8 @@ export const API_ENDPOINTS = {
     REGISTER: '/api/users/signup',
     VERIFY: '/api/users/verify',
     LOGOUT: '/api/users/logout',
+    GOOGLE_OAUTH: '/api/users/auth/google',
+    GOOGLE_CALLBACK: '/api/users/auth/google/callback',
   },
   PRODUCTS: {
     SEARCH: '/api/products/search-products',

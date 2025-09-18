@@ -24,3 +24,12 @@ export interface AuthResponse {
   user: User;
   token: string;
 }
+
+export interface GoogleOAuthUserData {
+  userId: string;
+  name: string;
+  email: string;
+  phone?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
