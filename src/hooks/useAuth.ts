@@ -134,7 +134,7 @@ export const useAuth = () => {
     }
   };
 
-  const handleOAuthSuccess = async (token: string, userData: GoogleOAuthUserData) => {
+  const handleOAuthSuccess = (token: string, userData: GoogleOAuthUserData) => {
     setLoading(true);
     setError('');
     
@@ -150,6 +150,7 @@ export const useAuth = () => {
       
       return response;
     } catch (err: unknown) {
+      console.error('OAuth success processing error:', err);
       const errorMessage = err instanceof Error ? err.message : 'OAuth login failed';
       setError(errorMessage);
       showError('Login Failed', errorMessage);

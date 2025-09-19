@@ -18,35 +18,41 @@ export default function LoginSuccessPage() {
         const userDataString = getUrlParam('user');
         
         if (!token) {
-          setError('No authentication token found');
-          setTimeout(() => router.push('/login'), 2000);
+          console.log('No authentication token found', token);
+          // setTimeout(() => router.push('/login'), 2000);
           return;
         }
 
         if (!userDataString) {
-          setError('No user data found');
-          setTimeout(() => router.push('/login'), 2000);
+          console.log('No user data found', userDataString);
+          // setTimeout(() => router.push('/login'), 2000);
           return;
         }
 
         // Parse user data
-        const userData = JSON.parse(decodeURIComponent(userDataString));
+        let userData;
+        try {
+          userData = JSON.parse(decodeURIComponent(userDataString));
+        } catch (parseError) {
+          console.error('Failed to parse user data:', parseError);
+          console.log('Invalid user data format');
+          // setTimeout(() => router.push('/login'), 2000);
+          return;
+        }
 
-        // Handle OAuth success
-        await handleOAuthSuccess(token, userData);
+        // Handle OAuth success (now synchronous)
+        handleOAuthSuccess(token, userData);
         
         // Clean up URL parameters
         removeUrlParams(['token', 'user']);
         
-        // Redirect to home page after successful authentication
-        setTimeout(() => {
-          router.push('/');
-        }, 1500);
+        // Redirect to home page immediately after processing
+        router.push('/');
         
       } catch (error) {
         console.error('OAuth callback processing failed:', error);
         setError('Authentication failed. Please try again.');
-        setTimeout(() => router.push('/login'), 3000);
+        // setTimeout(() => router.push('/login'), 3000);
       } finally {
         setIsProcessing(false);
       }
