@@ -15,6 +15,13 @@ export interface CartActionResponse {
   createdAt: string;
 }
 
+export interface Dimensions {
+  length: number;
+  breadth: number;
+  height: number;
+  weight: number;
+}
+
 export interface CartItem {
   productId: string;
   productName: string;
@@ -30,6 +37,9 @@ export interface CartItem {
   platformCharges: number;    // Platform charges for this item (₹14.16 per product)
   category: string;
   description: string;
+
+   addressId: string;
+  dimensions: Dimensions;
 }
 
 export interface CartResponse {

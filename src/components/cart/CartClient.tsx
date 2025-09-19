@@ -308,12 +308,12 @@ export const CartClient = () => {
               )}
               
               <div className="flex justify-between text-sm">
-                <span>Delivery Charges</span>
+                <span>Approx Delivery Charges</span>
                 <span>
                   {cart.totalDeliveryCharges > 0 
                     ? `₹${cart.totalDeliveryCharges}`
                     : 'Free'
-                  }
+                  }  
                 </span>
               </div>
               

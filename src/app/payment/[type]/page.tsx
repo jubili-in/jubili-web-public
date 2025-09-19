@@ -12,6 +12,7 @@ import { useAddress } from "@/hooks/useAddress";
 import { getProductById } from "@/services/product.service";
 import { Product } from "@/lib/types/product";
 import { CartItem } from "@/lib/types/cart";
+import { DelhiveryCostResponse } from "@/lib/types/delhivary";
 import { useAuth } from "@/hooks/useAuth";
 import { useToastActions } from "@/hooks/useToastActions";
 import Script from "next/script";
@@ -35,6 +36,8 @@ export default function PaymentPage() {
 
   const [singleProduct, setSingleProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
+  // const [delhiveryCharges, setDelhiverycharges] = useState<DelhiveryCostResponse | null>(null);
+  const [delhiveryCharges, setDelhiverycharges] = useState<number | null>(null);
   const [quantity] = useState(1);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
@@ -141,9 +144,9 @@ export default function PaymentPage() {
       const subTotal = singleProduct.price * quantity;
       const currentTotal = singleProduct.currentPrice * quantity;
       const discount = subTotal - currentTotal;
-      const deliveryCharges =  49;
+      const deliveryCharges = 49;
       const platformCharges = 14.16; // Approximate platform charges
-      const grandTotal = currentTotal + deliveryCharges + platformCharges;
+      const grandTotal = currentTotal + platformCharges; // change in this line
       return { subTotal, currentTotal, discount, deliveryCharges, platformCharges, grandTotal };
     }
     return { subTotal: 0, currentTotal: 0, discount: 0, deliveryCharges: 0, platformCharges: 0, grandTotal: 0 };
@@ -160,6 +163,82 @@ export default function PaymentPage() {
   // };
 
   const selectedAddress = addresses.find(a => a.addressId === selectedAddressId) ?? addresses[0];
+  // console.log(cart); 
+  useEffect(() => {
+    //call the the coast calc method
+    const handleCoastCalc = async () => {
+      if (!cart?.items?.length || !selectedAddress) return;
+      console.log("I am called");
+
+
+
+
+
+      try {
+
+      const destination = selectedAddress.addressId.split("-")[0];
+
+      // 1️⃣ Build a unique key for each product request
+      const uniqueRequests = new Map<
+        string,
+        { origin: string; length: number; breadth: number; height: number; weight: number }
+      >();
+
+       cart.items.forEach((item) => {
+        const origin = item.addressId.split("-")[0];
+        let { length, breadth, height, weight } = item.dimensions;
+        height = height * 100; 
+        weight = weight * 1000; 
+
+        const key = `${origin}-${destination}-${length}-${breadth}-${height}-${weight}`;
+        if (!uniqueRequests.has(key)) {
+          uniqueRequests.set(key, { origin, length, breadth, height, weight });
+        }
+      });
+
+      console.log(uniqueRequests); 
+
+
+
+         // 2️⃣ Send API calls only for unique requests
+      const results = await Promise.all(
+        Array.from(uniqueRequests.values()).map(async (req) => {
+          const res = await axios.post<DelhiveryCostResponse>(
+            `${baseUrl}/api/delhivary/shipment/coast`,
+            {
+              origin: req.origin,
+              destination,
+              length: req.length,
+              breadth: req.breadth,
+              height: req.height , // *10 will be omitted
+              weight: req.weight, // *1000 will be omitted
+            }
+          );
+
+          return res.data.data[0].total_amount; // adjust per API response
+        })
+      );
+
+        const total = results.reduce((sum, val) => sum + val, 0);
+        console.log(results); 
+        setDelhiverycharges(total); 
+      console.log(total, "final shipping cost");
+      // setDelhiverycharges(total);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          showError('Coast calculation failed', err.message, 4000);
+        } else {
+          showError('Coast calculation failed', 'Try again later', 4000);
+        }
+      }
+    }
+
+    handleCoastCalc();
+  }, [cart, selectedAddress]);
+
+
+  console.log(delhiveryCharges);
+
 
 
   const handlePayment = async (): Promise<void> => {
@@ -167,12 +246,12 @@ export default function PaymentPage() {
       showError("Error", "Razorpay SDK not loaded yet. Please try again in a moment.", 3000);
       return;
     }
-    
+
     if (!selectedAddress) {
       showError("Error", "Please select a delivery address to continue.", 3000);
       return;
     }
-    
+
     // SSE
     if (user?.userId) {
       subscribeOrderSSE(
@@ -249,7 +328,7 @@ export default function PaymentPage() {
 
             console.log("data dot order dot id", data.order.id);
             console.log("Sudhu data", data);
-            
+
             if (verify.data.success) {
               alert("Payment Successful!");
             } else {
@@ -401,8 +480,8 @@ export default function PaymentPage() {
                           <span className="mx-2 font-medium text-base min-w-[2ch] text-center">{item.quantity}</span>
                         </>
                       ) : ( */}
-                        <span className="font-medium text-base">{item.quantity}</span>
-                      
+                      <span className="font-medium text-base">{item.quantity}</span>
+
                     </div>
 
                     {/* total */}
@@ -434,8 +513,8 @@ export default function PaymentPage() {
               {addresses.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="text-gray-500 mb-4">No addresses found</div>
-                  <a 
-                    href="/user#add-address" 
+                  <a
+                    href="/user#add-address"
                     className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
                     Add Your First Address
@@ -529,7 +608,8 @@ export default function PaymentPage() {
                 )}
                 <div className="flex justify-between text-sm">
                   <span>Delivery Charges</span>
-                  <span>{totals.deliveryCharges > 0 ? currency(totals.deliveryCharges) : "Free"}</span>
+                  {/* <span>{totals.deliveryCharges > 0 ? currency(totals.deliveryCharges) : "Free"}</span> */}
+                  <span>{delhiveryCharges}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Platform Charges</span>
@@ -538,7 +618,8 @@ export default function PaymentPage() {
                 <hr className="my-4" />
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Total</span>
-                  <span>{currency(totals.grandTotal)}</span>
+                  {/* <span>{currency(totals.grandTotal)}</span>  delhivaryCharge wiil be added here*/}
+                  <span>{currency(totals.grandTotal)}</span> 
                 </div>
               </div>
 
