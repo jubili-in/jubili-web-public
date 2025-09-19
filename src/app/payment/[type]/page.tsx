@@ -187,6 +187,8 @@ export default function PaymentPage() {
        cart.items.forEach((item) => {
         const origin = item.addressId.split("-")[0];
         let { length, breadth, height, weight } = item.dimensions;
+        length = length;
+        breadth = breadth;
         height = height * 100; 
         weight = weight * 1000; 
 
