@@ -146,7 +146,7 @@ export const CartClient = () => {
     }
   }, [removeFromCart]);
 
-  if (loading && !cart) {
+  if (loading) {
     return <LoadingSpinner />;
   }
 
