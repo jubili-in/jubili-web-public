@@ -15,7 +15,12 @@ export interface Product {
   imageUrls: string[];
   sellerId?: string;
   sellerName?: string;
-  dimentions: {};
+  dimentions: {
+    length?: number;
+    breadth?: number;
+    height?: number;
+    weight?: number;
+  };
   categoryId?: string;
   createdAt?: string;
   linkedItems?: Array<{

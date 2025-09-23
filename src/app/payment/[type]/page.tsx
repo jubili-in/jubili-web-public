@@ -181,11 +181,7 @@ export default function PaymentPage() {
 
        cart.items.forEach((item) => {
         const origin = item.addressId.split("-")[0];
-        let { length, breadth, height, weight } = item.dimensions;
-        // length = length;
-        // breadth = breadth;
-        // height = height; 
-        // weight = weight; 
+        const { length, breadth, height, weight } = item.dimensions;
 
         const key = `${origin}-${destination}-${length}-${breadth}-${height}-${weight}`;
         if (!uniqueRequests.has(key)) {
