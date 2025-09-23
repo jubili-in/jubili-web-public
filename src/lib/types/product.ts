@@ -14,6 +14,8 @@ export interface Product {
   isLiked?: boolean;
   imageUrls: string[];
   sellerId?: string;
+  sellerName?: string;
+  dimentions: {};
   categoryId?: string;
   createdAt?: string;
   linkedItems?: Array<{
@@ -45,6 +47,7 @@ export const transformLikedProductToProduct = (likedProduct: LikedProduct): Prod
   currentPrice: 0,
   // discount: 0,
   brand: '',
+  dimentions : {},
   gender: '',
   stock: 0,
   likeCount: 0,

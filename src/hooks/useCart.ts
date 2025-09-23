@@ -34,7 +34,7 @@ export const useCart = (): UseCartReturn => {
 
     try {
       const cartData = await userActionsService.getCart(userId);
-      console.log(cartData);
+      console.log("Cart data from cart service layer",cartData);
       setCart(cartData);
       return cartData;
     } catch (err) {

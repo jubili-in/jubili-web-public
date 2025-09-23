@@ -28,7 +28,7 @@ export interface CartItem {
   imageUrl: string | null;
   brand: string;
   sellerId: string;
-  sellerName?: string;
+  sellerName: string;
   price: number;           // Original price per unit
   currentPrice: number;    // Current price per unit
   quantity: number;

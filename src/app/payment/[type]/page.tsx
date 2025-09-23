@@ -111,6 +111,8 @@ export default function PaymentPage() {
         quantity: item.quantity,
         imageUrl: item.imageUrl,
         totalCurrentPrice: item.totalCurrentPrice, // Current total for this item
+        sellerId: item.sellerId, // Added sellerId
+        dimentions: item.dimensions,
       }));
     } else if (isSingleProductPayment && singleProduct) {
       return [{
@@ -123,7 +125,9 @@ export default function PaymentPage() {
         currentPrice: singleProduct.currentPrice,
         quantity: quantity,
         imageUrl: singleProduct.imageUrls[0] || '/images/logo.svg',
-        totalCurrentPrice: singleProduct.currentPrice * quantity
+        totalCurrentPrice: singleProduct.currentPrice * quantity,
+        sellerId: singleProduct.sellerId, // Added sellerId
+        dimentions: singleProduct.dimentions,
       }];
     }
     return [];
@@ -153,15 +157,6 @@ export default function PaymentPage() {
   }, [isCartPayment, cart, isSingleProductPayment, singleProduct, quantity]);
 
 
-  // const onRemove = (id: string) => {
-  //   if (isCartPayment) {
-  //     // For cart payments, removal is handled by cart context
-  //     return;
-  //   }
-  //   // For single product payments, redirect back
-  //   router.push('/');
-  // };
-
   const selectedAddress = addresses.find(a => a.addressId === selectedAddressId) ?? addresses[0];
   // console.log(cart); 
   useEffect(() => {
@@ -187,10 +182,10 @@ export default function PaymentPage() {
        cart.items.forEach((item) => {
         const origin = item.addressId.split("-")[0];
         let { length, breadth, height, weight } = item.dimensions;
-        length = length;
-        breadth = breadth;
-        height = height * 100; 
-        weight = weight * 1000; 
+        // length = length;
+        // breadth = breadth;
+        // height = height; 
+        // weight = weight; 
 
         const key = `${origin}-${destination}-${length}-${breadth}-${height}-${weight}`;
         if (!uniqueRequests.has(key)) {
@@ -236,7 +231,7 @@ export default function PaymentPage() {
     }
 
     handleCoastCalc();
-  }, [cart, selectedAddress]);
+  }, [cart, selectedAddressId]);
 
 
   console.log(delhiveryCharges);
@@ -283,13 +278,40 @@ export default function PaymentPage() {
         amount: totals.grandTotal,
         receipt: `rcpt_${Date.now()}`,
         orderId: `order_${Date.now()}`,
+        totalAmount: totals.grandTotal,
+        
+        //user info
         userId: user?.userId,
+
+        customerName: selectedAddress.name,
+        customerEmail: user?.email,
+        customerPhone: selectedAddress.phoneNumber,
+
+        //address info
         address: selectedAddress,
-        totalAmount: 100,
+
+        transportMode: 'Surface',
+        paymentMode: 'Prepaid',
+        codAmount: 0,
+
         items: items.map(item => ({
+        //seller address info
+          pickupLocation: "SOUMIK",
+          prodcutDimention: item.dimentions,
+          sellerId: item.sellerId,
+
+          productName: item.name,
           productId: item.id,
+          packagingType: 'Box',
+          fragile: false,
+
+          //price
           quantity: item.quantity,
           price: item.price,
+          unitItemPrice: item.currentPrice,
+          deliveryByUser: delhiveryCharges,
+          deliveryBySeller: delhiveryCharges,
+          serviceCharge: 10,
         })),
       },
         {
@@ -364,7 +386,8 @@ export default function PaymentPage() {
       <div className="max-w-6xl mx-auto p-4">
         <PageHeading title="Loading..." />
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <img src="/icons/loading.svg" alt="Loading..." className="w-8 h-8 animate-spin mb-4" />
+           <div className="text-lg font-medium text-gray-700">Loading...</div>
         </div>
       </div>
     );
