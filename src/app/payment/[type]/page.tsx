@@ -308,9 +308,11 @@ export default function PaymentPage() {
         name: "Jubili",
         description: "Safe & Secure Payment using Razorpay",
         order_id: data.order.id,
-
+        
         handler: async (response) => {
           try {
+            const productIds = items.map(item => item.id); 
+
             const verify = await axios.post(
               `${baseUrl}/api/payment/razorpay/verify`,
               {
@@ -318,6 +320,7 @@ export default function PaymentPage() {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_signature: response.razorpay_signature,
                 orderId: data.order.id,
+                products: productIds,
               },
               {
                 headers: {
