@@ -12,3 +12,15 @@ export interface FavActionResponse{
   quantity: string;
   createdAt: string;
 }
+
+export interface FavouritesApiResponse {
+  items: FavouriteItem[];
+  message: string;
+}
+
+export interface FavouriteItem {
+  productId: string;
+  productName: string;
+  imageUrl: string;
+  description: string;
+}

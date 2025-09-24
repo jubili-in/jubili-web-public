@@ -5,9 +5,6 @@ export interface Product {
   productDescription: string;
   price: number;
   brand: string;
-  // color: string;
-  // size: string;
-  // material: string;
   gender: string;
   stock: number;
   likeCount: number;

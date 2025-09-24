@@ -33,23 +33,14 @@ export default function PaymentPage() {
   const { cart, loading: cartLoading, fetchCart } = useCart();
   const { addresses, loading: addressLoading, fetchAddresses } = useAddress();
   const { showError, showSuccess, showInfo } = useToastActions();
-
   const [singleProduct, setSingleProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
-  // const [delhiveryCharges, setDelhiverycharges] = useState<DelhiveryCostResponse | null>(null);
   const [delhiveryCharges, setDelhiverycharges] = useState<number | null>(null);
   const [quantity] = useState(1);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
 
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  // useEffect(( ) => { 
-  //   console.log(cartLoading, "this is cartLoading baler");
-  //   console.log(cart, "this is cart baler"); 
-  //   console.log(singleProduct, "this is singleProduct baler");
-  // }, [cartLoading]); 
-
-  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
 
   // Determine if this is cart or single product payment
   const isCartPayment = type === 'cart';
@@ -163,17 +154,12 @@ export default function PaymentPage() {
     //call the the coast calc method
     const handleCoastCalc = async () => {
       if (!cart?.items?.length || !selectedAddress) return;
-      console.log("I am called");
-
-
-
-
 
       try {
 
       const destination = selectedAddress.addressId.split("-")[0];
 
-      // 1️⃣ Build a unique key for each product request
+      // Build a unique key for each product request
       const uniqueRequests = new Map<
         string,
         { origin: string; length: number; breadth: number; height: number; weight: number }
@@ -188,12 +174,8 @@ export default function PaymentPage() {
           uniqueRequests.set(key, { origin, length, breadth, height, weight });
         }
       });
-
-      console.log(uniqueRequests); 
-
-
-
-         // 2️⃣ Send API calls only for unique requests
+  
+      // 2️ Send API calls only for unique requests
       const results = await Promise.all(
         Array.from(uniqueRequests.values()).map(async (req) => {
           const res = await axios.post<DelhiveryCostResponse>(
@@ -215,8 +197,6 @@ export default function PaymentPage() {
         const total = results.reduce((sum, val) => sum + val, 0);
         console.log(results); 
         setDelhiverycharges(total); 
-      console.log(total, "final shipping cost");
-      // setDelhiverycharges(total);
       } catch (err: unknown) {
         if (err instanceof Error) {
           showError('Coast calculation failed', err.message, 4000);
