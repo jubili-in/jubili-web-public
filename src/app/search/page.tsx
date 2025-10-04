@@ -6,6 +6,7 @@ import ProductCard from '@/components/product/ProductCard';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useSearch } from '@/hooks/useSearch';
+import { SearchBar } from '@/components/layout/SearchBar';
 
 // Loading component
 function LoadingSpinner() {
@@ -64,9 +65,9 @@ function SearchContent() {
       {!query ? (
         // Initial state - no search query
         <div className="text-center py-12">
-          <div className="mb-4">
+          <div className="mb-20 mt-20 flex justify-center items-center">
             <svg 
-              className="mx-auto h-12 w-12 text-gray-400" 
+              className="h-12 w-12 text-gray-400" 
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
@@ -78,10 +79,11 @@ function SearchContent() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
               />
             </svg>
+            <p className="text-gray-600 text-lg ml-2"> 
+              Enter a search term to see results
+            </p>
           </div>
-          <p className="text-gray-600 text-lg">
-            Enter a search term to see results
-          </p>
+          <SearchBar />
         </div>
       ) : isLoading ? (
         // Loading state
