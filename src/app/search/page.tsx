@@ -142,7 +142,7 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <Suspense fallback={<LoadingSpinner />}>
         <SearchContent />
       </Suspense>

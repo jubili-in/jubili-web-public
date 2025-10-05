@@ -60,9 +60,9 @@ export default function UserProfile() {
     }, []);
 
     // Don't render anything until mounted to prevent hydration mismatch
-    if (!mounted) {
-        return null;
-    }
+    // if (!mounted) {
+    //     return null;
+    // }
 
     if (!user) {
         return <AuthPopup />;
@@ -70,7 +70,7 @@ export default function UserProfile() {
 
     return (
         <>
-            <Navbar />
+            {/* <Navbar /> */}
             <main className="max-w-6xl mx-auto p-4">
                 <PageHeading title="My Account" />
                 <div className="bg-white rounded-2xl border border-gray-300 p-8 shadow-sm mb-8">

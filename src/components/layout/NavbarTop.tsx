@@ -3,226 +3,223 @@ import React, { useState, useRef, useEffect } from 'react';
 
 const NAV_ITEMS = [
   {
-    label: "Store",
+    label: "Fashion",
     type: "dropdown",
     columns: [
       {
-        heading: "Shop",
+        heading: "Women",
         featured: true,
         items: [
-          { text: "Shop the Latest", href: "#" },
-          { text: "Mac", href: "#" },
-          { text: "iPhone", href: "#" },
-          { text: "iPad", href: "#" },
-          { text: "Apple Watch", href: "#" },
+          { text: "New Arrivals", href: "#" },
+          { text: "Dresses & Jumpsuits", href: "#" },
+          { text: "Tops & T-Shirts", href: "#" },
+          { text: "Jeans & Pants", href: "#" },
+          { text: "Kurtas & Ethnic Wear", href: "#" },
+          { text: "Sweaters & Jackets", href: "#" },
           { text: "Accessories", href: "#" },
         ],
       },
       {
-        heading: "Quick Links",
+        heading: "Men",
         items: [
-          { text: "Find a Store", href: "#" },
-          { text: "Order Status", href: "#" },
-          { text: "Ways to Buy", href: "#" },
-          { text: "Apple Trade In", href: "#" },
+          { text: "New Arrivals", href: "#" },
+          { text: "T-Shirts & Shirts", href: "#" },
+          { text: "Jeans & Trousers", href: "#" },
+          { text: "Ethnic Wear", href: "#" },
+          { text: "Jackets & Hoodies", href: "#" },
+          { text: "Watches & Accessories", href: "#" },
+        ],
+      },
+      {
+        heading: "Kids",
+        items: [
+          { text: "Boys Clothing", href: "#" },
+          { text: "Girls Clothing", href: "#" },
+          { text: "Baby Essentials", href: "#" },
+          { text: "Footwear", href: "#" },
+          { text: "Toys & Games", href: "#" },
         ],
       },
       {
         heading: "More",
         items: [
-          { text: "Education Store", href: "#" },
-          { text: "Business Store", href: "#" },
+          { text: "Fashion Deals", href: "#" },
+          { text: "Designer Boutique", href: "#" },
+          { text: "Festival Collection", href: "#" },
           { text: "Gift Cards", href: "#" },
         ],
       },
     ],
   },
   {
-    label: "Mac",
+    label: "Home Appliances",
     type: "dropdown",
     columns: [
       {
-        heading: "Explore Mac",
+        heading: "Kitchen",
         featured: true,
         items: [
-          { text: "Explore All Mac", href: "#" },
-          { text: "MacBook Air", href: "#" },
-          { text: "MacBook Pro", href: "#" },
-          { text: "iMac", href: "#" },
-          { text: "Mac mini", href: "#" },
-          { text: "Mac Studio", href: "#" },
-          { text: "Mac Pro", href: "#" },
-          { text: "Displays", href: "#" },
+          { text: "Refrigerators", href: "#" },
+          { text: "Microwaves", href: "#" },
+          { text: "Mixers & Grinders", href: "#" },
+          { text: "Water Purifiers", href: "#" },
+          { text: "Dishwashers", href: "#" },
         ],
       },
       {
-        heading: "Shop Mac",
+        heading: "Living Room",
         items: [
-          { text: "Shop Mac", href: "#" },
-          { text: "Mac Accessories", href: "#" },
-          { text: "Ways to Buy", href: "#" },
-          { text: "Festive Offer", href: "#" },
+          { text: "Televisions", href: "#" },
+          { text: "Air Conditioners", href: "#" },
+          { text: "Speakers & Soundbars", href: "#" },
+          { text: "Fans & Air Coolers", href: "#" },
         ],
       },
       {
-        heading: "More from Mac",
+        heading: "Laundry & Cleaning",
         items: [
-          { text: "Mac Support", href: "#" },
-          { text: "AppleCare", href: "#" },
-          { text: "macOS Tahoe", href: "#" },
-          { text: "Apple Intelligence", href: "#" },
-          { text: "Apps by Apple", href: "#" },
-          { text: "Continuity", href: "#" },
-          { text: "iCloud+", href: "#" },
-          { text: "Mac for Business", href: "#" },
-          { text: "Education", href: "#" },
+          { text: "Washing Machines", href: "#" },
+          { text: "Vacuum Cleaners", href: "#" },
+          { text: "Irons & Steamers", href: "#" },
+        ],
+      },
+      {
+        heading: "Smart Home",
+        items: [
+          { text: "Smart Lights", href: "#" },
+          { text: "Security Cameras", href: "#" },
+          { text: "Home Assistants", href: "#" },
         ],
       },
     ],
   },
   {
-    label: "iPhone",
+    label: "Shoes",
     type: "dropdown",
     columns: [
       {
-        heading: "Explore iPhone",
+        heading: "Men's Shoes",
         featured: true,
         items: [
-          { text: "Explore All iPhone", href: "#" },
-          { text: "iPhone 16 Pro", href: "#" },
-          { text: "iPhone 16", href: "#" },
-          { text: "iPhone 15", href: "#" },
-          { text: "iPhone 14", href: "#" },
-          { text: "iPhone SE", href: "#" },
+          { text: "Sneakers", href: "#" },
+          { text: "Formal Shoes", href: "#" },
+          { text: "Loafers", href: "#" },
+          { text: "Sandals & Slippers", href: "#" },
+          { text: "Boots", href: "#" },
         ],
       },
       {
-        heading: "Shop iPhone",
+        heading: "Women's Shoes",
         items: [
-          { text: "Shop iPhone", href: "#" },
-          { text: "iPhone Accessories", href: "#" },
-          { text: "Apple Trade In", href: "#" },
-          { text: "Ways to Buy", href: "#" },
+          { text: "Heels", href: "#" },
+          { text: "Flats", href: "#" },
+          { text: "Sneakers", href: "#" },
+          { text: "Boots", href: "#" },
+          { text: "Ethnic Footwear", href: "#" },
         ],
       },
       {
-        heading: "More from iPhone",
+        heading: "Kids' Shoes",
         items: [
-          { text: "iPhone Support", href: "#" },
-          { text: "AppleCare+", href: "#" },
-          { text: "iOS 18", href: "#" },
-          { text: "Apple Intelligence", href: "#" },
-          { text: "Apps by Apple", href: "#" },
-          { text: "iCloud+", href: "#" },
-          { text: "Wallet, Pay, Card", href: "#" },
-          { text: "Siri", href: "#" },
+          { text: "Boys Footwear", href: "#" },
+          { text: "Girls Footwear", href: "#" },
+          { text: "School Shoes", href: "#" },
+        ],
+      },
+      {
+        heading: "Trending",
+        items: [
+          { text: "New Releases", href: "#" },
+          { text: "Best Sellers", href: "#" },
+          { text: "Seasonal Offers", href: "#" },
         ],
       },
     ],
   },
   {
-    label: "iPad",
+    label: "My Account",
     type: "dropdown",
     columns: [
       {
-        heading: "Explore iPad",
+        heading: "Orders & Returns",
         featured: true,
         items: [
-          { text: "Explore All iPad", href: "#" },
-          { text: "iPad Pro", href: "#" },
-          { text: "iPad Air", href: "#" },
-          { text: "iPad", href: "#" },
-          { text: "iPad mini", href: "#" },
-          { text: "Apple Pencil", href: "#" },
-          { text: "Keyboards", href: "#" },
-        ],
-      },
-      {
-        heading: "Shop iPad",
-        items: [
-          { text: "Shop iPad", href: "#" },
-          { text: "iPad Accessories", href: "#" },
-          { text: "Ways to Buy", href: "#" },
-          { text: "Apple Trade In", href: "#" },
-        ],
-      },
-      {
-        heading: "More from iPad",
-        items: [
-          { text: "iPad Support", href: "#" },
-          { text: "AppleCare+", href: "#" },
-          { text: "iPadOS 18", href: "#" },
-          { text: "Apps by Apple", href: "#" },
-          { text: "iCloud+", href: "#" },
-          { text: "Education", href: "#" },
-        ],
-      },
-    ],
-  },
-  {
-    label: "Orders",
-    type: "dropdown",
-    columns: [
-      {
-        heading: "Track & Manage",
-        featured: true,
-        items: [
-          { text: "Order Status", href: "#" },
-          { text: "Returns", href: "#" },
+          { text: "My Orders", href: "#" },
+          { text: "Track Order", href: "#" },
+          { text: "Returns & Refunds", href: "#" },
           { text: "Cancellations", href: "#" },
-          { text: "View Order History", href: "#" },
         ],
       },
       {
-        heading: "Customer Support",
+        heading: "Account Info",
         items: [
-          { text: "Contact Support", href: "#" },
-          { text: "Warranty Information", href: "#" },
-          { text: "Service & Repairs", href: "#" },
-        ],
-      },
-      {
-        heading: "Account",
-        items: [
-          { text: "Manage Account", href: "#" },
-          { text: "Shipping Addresses", href: "#" },
+          { text: "Profile Settings", href: "#" },
+          { text: "Saved Addresses", href: "#" },
           { text: "Payment Methods", href: "#" },
+          { text: "Wishlist", href: "#" },
+        ],
+      },
+      {
+        heading: "Support",
+        items: [
+          { text: "Customer Support", href: "#" },
+          { text: "Help Center", href: "#" },
+          { text: "Report a Problem", href: "#" },
+        ],
+      },
+      {
+        heading: "Rewards & Membership",
+        items: [
+          { text: "Loyalty Points", href: "#" },
+          { text: "Gift Cards", href: "#" },
+          { text: "Refer & Earn", href: "#" },
         ],
       },
     ],
   },
   {
-    label: "Links",
+    label: "Quick Links",
     type: "dropdown",
     columns: [
       {
-        heading: "Company Info",
+        heading: "About",
         featured: true,
         items: [
           { text: "About Us", href: "#" },
           { text: "Careers", href: "#" },
-          { text: "Investors", href: "#" },
-          { text: "Press/Media", href: "#" },
+          { text: "Press", href: "#" },
         ],
       },
       {
         heading: "Policies",
         items: [
-          { text: "Terms of Use", href: "#" },
+          { text: "Terms & Conditions", href: "#" },
           { text: "Privacy Policy", href: "#" },
+          { text: "Return Policy", href: "#" },
           { text: "Cookie Policy", href: "#" },
         ],
       },
       {
-        heading: "Other",
+        heading: "Help & Support",
+        items: [
+          { text: "FAQs", href: "#" },
+          { text: "Contact Us", href: "#" },
+          { text: "Order Tracking", href: "#" },
+          { text: "Store Locator", href: "#" },
+        ],
+      },
+      {
+        heading: "More",
         items: [
           { text: "Affiliate Program", href: "#" },
+          { text: "Corporate Enquiries", href: "#" },
           { text: "Site Map", href: "#" },
         ],
       },
     ],
   },
 ];
+
 
 export const NavbarTop=()=> {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -336,7 +333,7 @@ export const NavbarTop=()=> {
       >
         <div className="h-full overflow-y-auto px-4 py-6">
           {NAV_ITEMS.map(item => (
-            <div key={item.label} className="border-b border-gray-800">
+            <div key={item.label} className="">
               <button
                 onClick={() => toggleMobileItem(item.label)}
                 className="w-full flex items-center justify-between py-4 text-lg font-medium"
@@ -397,7 +394,7 @@ export const NavbarTop=()=> {
       >
         {activeDropdown && NAV_ITEMS.find(item => item.label === activeDropdown)?.type === "dropdown" && (
           <div className="max-w-5xl mx-auto px-4 py-8">
-            <div className="grid grid-cols-3 gap-8">
+            <div className="grid grid-cols-4 gap-8">
               {NAV_ITEMS.find(item => item.label === activeDropdown)?.columns?.map((col, idx) => (
                 <div key={idx}>
                   <h3 className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-4">

@@ -5,7 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 export default function CartPage() {
   return (
     <>
-      <Navbar /> 
+      {/* <Navbar />  */}
       <CartClient />
     </>
   );

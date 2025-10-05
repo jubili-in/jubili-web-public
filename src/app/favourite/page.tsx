@@ -36,7 +36,7 @@ export default function FavouritePage() {
   if (loading) {
     return (
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <img
             src="/icons/loading.svg"
@@ -103,7 +103,7 @@ export default function FavouritePage() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="max-w-6xl mx-auto p-4">
         <PageHeading title="My Favorites" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
