@@ -1,9 +1,10 @@
-//
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ToastProvider } from '@/contexts/ToastContext';
-import { ToastContainer } from '@/components/ui/ToastContainer';
+import { ToastProvider } from "@/contexts/ToastContext";
+import { ToastContainer } from "@/components/ui/ToastContainer";
+import { NavbarTop } from "@/components/layout/NavbarTop";
+import ConditionalNavbar from "@/components/layout/ConditionalNavbar"; // 👈 add this line
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,15 +18,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <ToastProvider>
+          <NavbarTop />
+          <div id="page-content" className="transition duration-300">
             {children}
-            <ToastContainer />
+          </div>
+          <ConditionalNavbar />
+          <ToastContainer />
         </ToastProvider>
       </body>
     </html>
