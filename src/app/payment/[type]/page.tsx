@@ -53,6 +53,7 @@ export default function PaymentPage() {
         setLoading(true);
         try {
           const product = await getProductById(type, token!);
+          console.log("Fetched product:", product);
           setSingleProduct(product);
         } catch (error) {
           console.error('Error fetching product:', error);
@@ -106,6 +107,7 @@ export default function PaymentPage() {
         dimentions: item.dimensions,
       }));
     } else if (isSingleProductPayment && singleProduct) {
+      console.log("Single product for payment:", singleProduct);
       return [{
         id: singleProduct.productId,
         name: singleProduct.productName,
@@ -118,7 +120,7 @@ export default function PaymentPage() {
         imageUrl: singleProduct.imageUrls[0] || '/images/logo.svg',
         totalCurrentPrice: singleProduct.currentPrice * quantity,
         sellerId: singleProduct.sellerId, // Added sellerId
-        dimentions: singleProduct.dimentions,
+        dimentions: singleProduct.dimensions,
       }];
     }
     return [];
@@ -150,53 +152,132 @@ export default function PaymentPage() {
 
   const selectedAddress = addresses.find(a => a.addressId === selectedAddressId) ?? addresses[0];
   // console.log(cart); 
+  // useEffect(() => {
+  //   //call the the coast calc method
+  //   const handleCoastCalc = async () => {
+  //     if (!cart?.items?.length || !selectedAddress) return;
+
+  //     try {
+
+  //       const destination = selectedAddress.addressId.split("-")[0];
+
+  //       // Build a unique key for each product request
+  //       const uniqueRequests = new Map<
+  //         string,
+  //         { origin: string; length: number; breadth: number; height: number; weight: number }
+  //       >();
+
+  //       cart.items.forEach((item) => {
+  //         const origin = item.addressId.split("-")[0];
+  //         const { length, breadth, height, weight } = item.dimensions;
+
+  //         const key = `${origin}-${destination}-${length}-${breadth}-${height}-${weight}`;
+  //         if (!uniqueRequests.has(key)) {
+  //           uniqueRequests.set(key, { origin, length, breadth, height, weight });
+  //         }
+  //       });
+
+  //       // 2️ Send API calls only for unique requests
+  //       const results = await Promise.all(
+  //         Array.from(uniqueRequests.values()).map(async (req) => {
+  //           const res = await axios.post<DelhiveryCostResponse>(
+  //             `${baseUrl}/api/delhivary/shipment/coast`,
+  //             {
+  //               origin: req.origin,
+  //               destination,
+  //               length: req.length,
+  //               breadth: req.breadth,
+  //               height: req.height, // *10 will be omitted
+  //               weight: req.weight, // *1000 will be omitted
+  //             }
+  //           );
+
+  //           return res.data.data[0].total_amount; // adjust per API response
+  //         })
+  //       );
+
+  //       const total = results.reduce((sum, val) => sum + val, 0);
+  //       console.log(results);
+  //       setDelhiverycharges(total);
+  //     } catch (err: unknown) {
+  //       if (err instanceof Error) {
+  //         showError('Coast calculation failed', err.message, 4000);
+  //       } else {
+  //         showError('Coast calculation failed', 'Try again later', 4000);
+  //       }
+  //     }
+  //   }
+
+  //   handleCoastCalc();
+  // }, [cart, selectedAddressId]);
+
+
   useEffect(() => {
-    //call the the coast calc method
+    console.log(selectedAddress); 
     const handleCoastCalc = async () => {
-      if (!cart?.items?.length || !selectedAddress) return;
+      // Exit if no items
+      if ((!cart?.items?.length && !singleProduct) || !selectedAddress) return;
 
       try {
+        const destination = selectedAddress.addressId.split("-")[0];
 
-      const destination = selectedAddress.addressId.split("-")[0];
+        // Build unique requests map
+        const uniqueRequests = new Map<
+          string,
+          { origin: string; length: number; breadth: number; height: number; weight: number }
+        >();
 
-      // Build a unique key for each product request
-      const uniqueRequests = new Map<
-        string,
-        { origin: string; length: number; breadth: number; height: number; weight: number }
-      >();
+        // Add cart items
+        cart?.items?.forEach((item) => {
+          const origin = item.addressId.split("-")[0];
+          const { length, breadth, height, weight } = item.dimensions || { length: 0, breadth: 0, height: 0, weight: 0 };
 
-       cart.items.forEach((item) => {
-        const origin = item.addressId.split("-")[0];
-        const { length, breadth, height, weight } = item.dimensions;
+          const key = `${origin}-${destination}-${length}-${breadth}-${height}-${weight}`;
+          if (!uniqueRequests.has(key)) {
+            uniqueRequests.set(key, { origin, length, breadth, height, weight });
+          }
+        });
 
-        const key = `${origin}-${destination}-${length}-${breadth}-${height}-${weight}`;
-        if (!uniqueRequests.has(key)) {
-          uniqueRequests.set(key, { origin, length, breadth, height, weight });
+        console.log("Unique requests from cart items:", singleProduct);
+
+        // Add single product
+        if (singleProduct) {
+          const origin = singleProduct.addressId ? singleProduct.addressId.split("-")[0] : "";
+          const dims = singleProduct.dimensions || {};
+          const length = dims.length || 0;
+          const breadth = dims.breadth || 0;
+          const height = dims.height || 0;
+          const weight = dims.weight || 0;
+          // const { length, breadth, height, weight } = singleProduct.dimensions || { length: 0, breadth: 0, height: 0, weight: 0 };
+          const key = `${origin}-${destination}-${length}-${breadth}-${height}-${weight}`;
+          if (!uniqueRequests.has(key)) {
+            uniqueRequests.set(key, { origin, length, breadth, height, weight });
+          }
         }
-      });
-  
-      // 2️ Send API calls only for unique requests
-      const results = await Promise.all(
-        Array.from(uniqueRequests.values()).map(async (req) => {
-          const res = await axios.post<DelhiveryCostResponse>(
-            `${baseUrl}/api/delhivary/shipment/coast`,
-            {
-              origin: req.origin,
-              destination,
-              length: req.length,
-              breadth: req.breadth,
-              height: req.height , // *10 will be omitted
-              weight: req.weight, // *1000 will be omitted
-            }
-          );
 
-          return res.data.data[0].total_amount; // adjust per API response
-        })
-      );
+        // Send API calls only for unique requests
+        console.log("Final unique requests:", uniqueRequests);
+        const results = await Promise.all(
+          Array.from(uniqueRequests.values()).map(async (req) => {
+            const res = await axios.post<DelhiveryCostResponse>(
+              `${baseUrl}/api/delhivary/shipment/coast`,
+              {
+                origin: req.origin,
+                destination,
+                length: req.length,
+                breadth: req.breadth,
+                height: req.height,
+                weight: req.weight,
+              }
+            );
+            return res.data.data[0].total_amount;
+          })
+        );
+        console.log("Delhivery individual results:", results);
 
         const total = results.reduce((sum, val) => sum + val, 0);
-        console.log(results); 
-        setDelhiverycharges(total); 
+        console.log("Delhivery costs:", results);
+        setDelhiverycharges(total);
       } catch (err: unknown) {
         if (err instanceof Error) {
           showError('Coast calculation failed', err.message, 4000);
@@ -207,10 +288,11 @@ export default function PaymentPage() {
     }
 
     handleCoastCalc();
-  }, [cart, selectedAddressId]);
+  }, [cart, singleProduct, selectedAddress]);
 
 
-  console.log(delhiveryCharges);
+
+  // console.log(delhiveryCharges);
 
 
 
@@ -250,12 +332,19 @@ export default function PaymentPage() {
       );
     }
     try {
+      // console.log("Payment payload:", {
+      //   amount: totals.grandTotal,
+      //   items,
+      //   isCartPayment,
+      //   isSingleProductPayment,
+      //   singleProduct,
+      // });
       const { data } = await axios.post<RazorpayOrderResponse>(`${baseUrl}/api/payment/razorpay/order`, {
         amount: totals.grandTotal,
         receipt: `rcpt_${Date.now()}`,
         orderId: `order_${Date.now()}`,
         totalAmount: totals.grandTotal,
-        
+
         //user info
         userId: user?.userId,
 
@@ -271,7 +360,7 @@ export default function PaymentPage() {
         codAmount: 0,
 
         items: items.map(item => ({
-        //seller address info
+          //seller address info
           pickupLocation: "SOUMIK",
           prodcutDimention: item.dimentions,
           sellerId: item.sellerId,
@@ -308,10 +397,12 @@ export default function PaymentPage() {
         name: "Jubili",
         description: "Safe & Secure Payment using Razorpay",
         order_id: data.order.id,
-        
+
         handler: async (response) => {
           try {
-            const productIds = items.map(item => item.id); 
+            const productIds = items.map(item => item.id);
+            console.log("productIds:", productIds, "Baler");
+            console.log("Is array?", Array.isArray(productIds), "sudam");
 
             const verify = await axios.post(
               `${baseUrl}/api/payment/razorpay/verify`,
@@ -320,7 +411,7 @@ export default function PaymentPage() {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_signature: response.razorpay_signature,
                 orderId: data.order.id,
-                products: productIds,
+                productIds
               },
               {
                 headers: {
@@ -366,7 +457,7 @@ export default function PaymentPage() {
         <PageHeading title="Loading..." />
         <div className="flex items-center justify-center h-64">
           <img src="/icons/loading.svg" alt="Loading..." className="w-8 h-8 animate-spin mb-4" />
-           <div className="text-lg font-medium text-gray-700">Loading...</div>
+          <div className="text-lg font-medium text-gray-700">Loading...</div>
         </div>
       </div>
     );
@@ -623,7 +714,7 @@ export default function PaymentPage() {
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Total</span>
                   {/* <span>{currency(totals.grandTotal)}</span>  delhivaryCharge wiil be added here*/}
-                  <span>{currency(totals.grandTotal)}</span> 
+                  <span>{currency(totals.grandTotal)}</span>
                 </div>
               </div>
 

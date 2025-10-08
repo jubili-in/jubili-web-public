@@ -12,12 +12,13 @@ export interface Product {
   imageUrls: string[];
   sellerId?: string;
   sellerName?: string;
-  dimentions: {
+  dimensions: {
     length?: number;
     breadth?: number;
     height?: number;
     weight?: number;
   };
+  addressId?: string, // Added addressId field
   categoryId?: string;
   createdAt?: string;
   linkedItems?: Array<{
@@ -49,7 +50,7 @@ export const transformLikedProductToProduct = (likedProduct: LikedProduct): Prod
   currentPrice: 0,
   // discount: 0,
   brand: '',
-  dimentions : {},
+  dimensions : {},
   gender: '',
   stock: 0,
   likeCount: 0,
