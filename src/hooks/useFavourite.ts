@@ -52,7 +52,12 @@ export const useFavourite = (): useFavouriteReturn => {
                 category: '',
                 stock: 0,
                 likeCount: 0,
-                dimentions: '',
+                dimensions: {
+                    length: 0,
+                    breadth: 0,
+                    height: 0,
+                    weight: 0,
+                },
             }));
             setFavouritedProducts(products);
         } catch (err) {
@@ -99,10 +104,10 @@ export const useFavourite = (): useFavouriteReturn => {
             };
 
             await userActionsService.addToFav(favData);
-            
+
             showToastWithAction(
                 'success',
-                'Done', 
+                'Done',
                 'Item added to favourite successfully',
                 'Go to Favourite',
                 () => window.location.href = '/favourite',
@@ -159,7 +164,7 @@ export const useFavourite = (): useFavouriteReturn => {
         } catch (err) {
             // Revert optimistic update on error
             setFavouritedProducts(previousProducts);
-            
+
             const errorMessage = err instanceof Error ? err.message : 'Failed to remove from favorites';
             setError(errorMessage);
             showError(errorMessage);
