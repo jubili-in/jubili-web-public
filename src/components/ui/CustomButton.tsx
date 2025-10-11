@@ -43,11 +43,11 @@ export default function CustomButton({
     >
       {loading ? (
         <Image
+          width={20}
+          height={20}
           src="/icons/loading.svg" 
           alt="Loading" 
           style={{ 
-            width: "20px", 
-            height: "20px",
             filter: "brightness(0) invert(1)" // Makes the SVG white to match text color
           }} 
         />

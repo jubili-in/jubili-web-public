@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// Removed unused useEffect import
 
 interface OrderEvent {
   type: string;
@@ -24,12 +24,12 @@ export const subscribeOrderSSE = (
         eventSource.close();
         onComplete();
       }
-    } catch (err) {
-      console.error("Invalid SSE event:", event.data);
+    } catch (err: unknown) {
+      console.error("Invalid SSE event:", event.data, err);
     }
   };
 
-  eventSource.onerror = (err) => {
+  eventSource.onerror = (err: Event) => {
     console.error("SSE connection error:", err);
     eventSource.close();
   };
