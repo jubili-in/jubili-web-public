@@ -179,7 +179,7 @@ const Navbar = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className="w-full bg-transparent text-white placeholder-gray-400 outline-none text-sm"
+                className="w-full py-2 bg-transparent text-white placeholder-gray-400 outline-none text-sm"
                 autoFocus
               />
             </form>

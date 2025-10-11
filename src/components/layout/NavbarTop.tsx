@@ -272,7 +272,7 @@ export const NavbarTop=()=> {
             {/* Mobile Menu Button */}
             <button 
               onClick={toggleMobileMenu}
-              className="md:hidden text-black p-2"
+              className="md:hidden flex items-start gap-2 text-black p-2"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -281,7 +281,13 @@ export const NavbarTop=()=> {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 )}
               </svg>
+              <span className='text-[11px] font-medium text-left leading-none'>
+                Explore 
+                <br />
+                Categories
+              </span>
             </button>
+
 
             {/* Desktop Nav Items */}
             <div className="hidden md:flex items-center space-x-8">
@@ -326,8 +332,8 @@ export const NavbarTop=()=> {
 
       {/* Mobile Menu */}
       <div 
-        className={`md:hidden fixed inset-0 bg-white/10 backdrop-blur-lg transition-all duration-300 ease-in-out ${
-          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`md:hidden fixed inset-0 bg-white/60 backdrop-blur-lg transition-all duration-300 ease-in-out ${
+          mobileMenuOpen ? 'opacity-100 h-full pointer-events-auto' : 'opacity-0 h-0 pointer-events-none'
         }`}
         style={{ top: '48px' }}
       >
