@@ -76,8 +76,16 @@ export const useFavourite = (): useFavouriteReturn => {
     }, [fetchFavourites]);
 
     const addToFavorites = useCallback(async (productId: string) => {
-        if (!user?.userId) {
+        if (!user) {
             showError('Please login to add to favorites');
+            showToastWithAction(
+                'info',
+                'Login Required',
+                'Please log in to add items to your favourites.',
+                'Go to Login',
+                () => window.location.href = '/login',
+                5000
+            );
             return;
         }
 

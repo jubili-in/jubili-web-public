@@ -65,7 +65,11 @@ export default function UserProfile() {
     }
 
     if (!user) {
-        return <AuthPopup />;
+        return (
+          <>
+            <AuthPopup />
+          </>
+        );
     }
 
     return (

@@ -5,7 +5,7 @@ export default function AuthPopup() {
     const router = useRouter();
 
     return (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
             <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate-fadeIn">
                 <h2 className="text-2xl font-semibold mb-4">Login Required</h2>
                 <p className="text-gray-600 mb-6">

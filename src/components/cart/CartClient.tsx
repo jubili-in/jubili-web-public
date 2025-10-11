@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/hooks/useAuth';
+import AuthPopup from '@/components/shared/AuthPopup';
 import CustomButton from '@/components/ui/CustomButton';
 import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 
@@ -82,12 +84,20 @@ function EmptyCart({ onContinueShopping }: { onContinueShopping: () => void }) {
 export const CartClient = () => {
   const router = useRouter();
   const { cart, loading, error, fetchCart, updateQuantity, removeFromCart } = useCart();
+  const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [voucher, setVoucher] = useState('');
   const [loadingItems, setLoadingItems] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Only fetch cart when we have a logged in user
+    if (!user) return;
     fetchCart();
-  }, [fetchCart]);
+  }, [fetchCart, user]);
 
   const handleContinueShopping = useCallback(() => {
     router.push('/search');
@@ -148,6 +158,14 @@ export const CartClient = () => {
 
   if (loading) {
     return <LoadingSpinner />;
+  }
+
+  // Avoid rendering until mounted to prevent hydration mismatch
+  if (!mounted) return null;
+
+  // If user is not authenticated show the auth popup used elsewhere in the app
+  if (!user) {
+    return <AuthPopup />;
   }
 
   if (error) {

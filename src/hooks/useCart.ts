@@ -51,6 +51,17 @@ export const useCart = (): UseCartReturn => {
   const addToCart = useCallback(async (productId: string) => {
     if (!userId) {
       setError('User not authenticated');
+      showToastWithAction(
+        'error',
+        'Login Required',
+        'Please log in to add items to your cart.',
+        'Go to Login',
+        () => {
+          // Navigate to login page
+          window.location.href = '/login';
+        },
+        5000
+      );
       return;
     }
 
