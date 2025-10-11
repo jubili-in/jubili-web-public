@@ -151,67 +151,7 @@ export default function PaymentPage() {
 
 
   const selectedAddress = addresses.find(a => a.addressId === selectedAddressId) ?? addresses[0];
-  // console.log(cart); 
-  // useEffect(() => {
-  //   //call the the coast calc method
-  //   const handleCoastCalc = async () => {
-  //     if (!cart?.items?.length || !selectedAddress) return;
-
-  //     try {
-
-  //       const destination = selectedAddress.addressId.split("-")[0];
-
-  //       // Build a unique key for each product request
-  //       const uniqueRequests = new Map<
-  //         string,
-  //         { origin: string; length: number; breadth: number; height: number; weight: number }
-  //       >();
-
-  //       cart.items.forEach((item) => {
-  //         const origin = item.addressId.split("-")[0];
-  //         const { length, breadth, height, weight } = item.dimensions;
-
-  //         const key = `${origin}-${destination}-${length}-${breadth}-${height}-${weight}`;
-  //         if (!uniqueRequests.has(key)) {
-  //           uniqueRequests.set(key, { origin, length, breadth, height, weight });
-  //         }
-  //       });
-
-  //       // 2️ Send API calls only for unique requests
-  //       const results = await Promise.all(
-  //         Array.from(uniqueRequests.values()).map(async (req) => {
-  //           const res = await axios.post<DelhiveryCostResponse>(
-  //             `${baseUrl}/api/delhivary/shipment/coast`,
-  //             {
-  //               origin: req.origin,
-  //               destination,
-  //               length: req.length,
-  //               breadth: req.breadth,
-  //               height: req.height, // *10 will be omitted
-  //               weight: req.weight, // *1000 will be omitted
-  //             }
-  //           );
-
-  //           return res.data.data[0].total_amount; // adjust per API response
-  //         })
-  //       );
-
-  //       const total = results.reduce((sum, val) => sum + val, 0);
-  //       console.log(results);
-  //       setDelhiverycharges(total);
-  //     } catch (err: unknown) {
-  //       if (err instanceof Error) {
-  //         showError('Coast calculation failed', err.message, 4000);
-  //       } else {
-  //         showError('Coast calculation failed', 'Try again later', 4000);
-  //       }
-  //     }
-  //   }
-
-  //   handleCoastCalc();
-  // }, [cart, selectedAddressId]);
-
-
+ 
   useEffect(() => {
     console.log(selectedAddress); 
     const handleCoastCalc = async () => {
