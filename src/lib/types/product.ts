@@ -1,4 +1,5 @@
 export interface Product {
+  attributes: Record<string, string | undefined>;
   currentPrice: number;
   productId: string;
   productName: string;
@@ -45,6 +46,7 @@ export interface LikedProduct {
 // Transform function to convert LikedProduct to Product
 export const transformLikedProductToProduct = (likedProduct: LikedProduct): Product => ({
   ...likedProduct,
+  attributes : {},
   imageUrls: [likedProduct.imageUrl], // Convert single URL to array
   price: 0, // Default values for missing fields
   currentPrice: 0,
