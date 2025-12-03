@@ -96,7 +96,14 @@ export const useFavourite = (): useFavouriteReturn => {
 
         // Check if already favourited
         if (favouritedProducts?.some(product => product.productId === productId)) {
-            showError('This product is already in your favourites');
+            showToastWithAction(
+                'info',
+                'Oops',
+                'Item already added to favourites',
+                'Go to Favourite',
+                () => window.location.href = '/favourite',
+                5000
+            );
             return;
         }
 

@@ -3,13 +3,17 @@
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 
-const NAVBAR_ROUTES = ["/", "/search", "/cart", "/user", "/favourite"];
+const STATIC_ROUTES = ["/", "/search", "/cart", "/user", "/favourite"];
 
 export default function ConditionalNavbar() {
   const pathname = usePathname();
-  const showNavbar = NAVBAR_ROUTES.includes(pathname);
+
+  const showNavbar =
+    STATIC_ROUTES.includes(pathname) ||
+    pathname.startsWith("/product/"); // <-- dynamic route support
 
   if (!showNavbar) return null;
 
   return <Navbar />;
 }
+

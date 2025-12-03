@@ -10,6 +10,10 @@ type Props = {
   backgroundColor?: string;
   textColor?: string;
   disabled?: boolean;
+
+  // NEW PROPS
+  horizontalPadding?: number; // px
+  verticalPadding?: number;   // px
 };
 
 export default function CustomButton({ 
@@ -21,13 +25,17 @@ export default function CustomButton({
   backgroundColor = '#262626',
   textColor = '#ffffff',
   disabled = false,
+
+  // NEW DEFAULTS
+  horizontalPadding = 16, // px
+  verticalPadding = 8,    // px
 }: Props) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       style={{
-        padding: "8px 16px",
+        padding: `${verticalPadding}px ${horizontalPadding}px`,
         backgroundColor: backgroundColor,
         color: textColor,
         border: "none",
@@ -45,11 +53,11 @@ export default function CustomButton({
         <Image
           width={20}
           height={20}
-          src="/icons/loading.svg" 
-          alt="Loading" 
-          style={{ 
-            filter: "brightness(0) invert(1)" // Makes the SVG white to match text color
-          }} 
+          src="/icons/loading.svg"
+          alt="Loading"
+          // style={{ 
+          //   filter: "brightness(0) invert(1)"
+          // }} 
         />
       ) : (
         <>
